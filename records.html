@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Memory Records 🎵💕</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --record-purple: #9b5de5;
+    --record-pink: #f15bb5;
+    --record-yellow: #fee440;
+    --record-blue: #00bbf9;
+    --record-green: #00f5d4;
+    --record-dark: #0f0f23;
+    --record-light: #f8f9fa;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a0a1f 0%, #1a1a2e 50%, #0f0f23 100%);
+    color: var(--record-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Vinyl Record Background Animation */
+  .records-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.1;
+  }
+
+  .vinyl-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(155, 93, 229, 0.1);
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Main Container */
+  .main-container {
+    position: relative;
+    z-index: 2;
+    padding: 1rem;
+    max-width: 2400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Back Button */
+  .back-button {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    background: linear-gradient(135deg, var(--record-purple) 0%, var(--record-pink) 100%);
+    color: white;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(155, 93, 229, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(10px);
+    font-size: 0.9rem;
+  }
+
+  .back-button:hover {
+    background: linear-gradient(135deg, var(--record-pink) 0%, var(--record-blue) 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(155, 93, 229, 0.6);
+  }
+
+  /* Page Header - Responsive */
+  .page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-top: 4rem;
+    position: relative;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .page-title {
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, 
+      var(--record-yellow) 0%,
+      var(--record-pink) 25%,
+      var(--record-purple) 50%,
+      var(--record-blue) 75%,
+      var(--record-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+  }
+
+  .page-subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--record-blue);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  /* Records Player Container */
+  .player-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    width: 100%;
+  }
+
+  /* Vinyl Record Player - Responsive */
+  .vinyl-player {
+    width: min(90vw, 400px);
+    height: min(90vw, 400px);
+    position: relative;
+    margin: 1rem auto;
+  }
+
+  .record-disc {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+      #000 0%,
+      #222 30%,
+      #000 70%,
+      #111 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+      0 0 0 8px rgba(155, 93, 229, 0.1),
+      0 0 30px rgba(0, 0, 0, 0.8),
+      inset 0 0 20px rgba(255, 255, 255, 0.05);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .record-disc.spinning {
+    animation: spinRecord 4s linear infinite;
+  }
+
+  @keyframes spinRecord {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .record-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(80px, 20vw, 120px);
+    height: clamp(80px, 20vw, 120px);
+    background: linear-gradient(135deg, var(--record-purple) 0%, var(--record-pink) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    box-shadow: 0 0 20px rgba(155, 93, 229, 0.5);
+  }
+
+  .record-center {
+    width: clamp(20px, 5vw, 30px);
+    height: clamp(20px, 5vw, 30px);
+    background: white;
+    border-radius: 50%;
+  }
+
+  .record-grooves {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .groove {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Record Player Arm - Responsive */
+  .player-arm {
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: clamp(180px, 45vw, 300px);
+    height: clamp(90px, 22.5vw, 150px);
+    transform-origin: 30px 30px;
+    transform: rotate(-30deg);
+    transition: transform 1s ease;
+    z-index: 2;
+  }
+
+  .player-arm.playing {
+    transform: rotate(0deg);
+  }
+
+  .arm-base {
+    position: absolute;
+    width: clamp(50px, 12.5vw, 80px);
+    height: clamp(50px, 12.5vw, 80px);
+    background: linear-gradient(135deg, #555 0%, #333 100%);
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  }
+
+  .arm-rod {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: clamp(150px, 37.5vw, 220px);
+    height: 6px;
+    background: linear-gradient(90deg, #666 0%, #444 100%);
+    border-radius: 4px;
+    transform-origin: 0 0;
+  }
+
+  .arm-head {
+    position: absolute;
+    top: -10px;
+    left: clamp(140px, 35vw, 210px);
+    width: clamp(22px, 5.5vw, 30px);
+    height: clamp(22px, 5.5vw, 30px);
+    background: linear-gradient(135deg, var(--record-purple) 0%, var(--record-pink) 100%);
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Records Shelf - Responsive Grid */
+  .records-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+    width: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+  }
+
+  /* Record Card - Responsive */
+  .record-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .record-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+      0 15px 30px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(155, 93, 229, 0.3);
+    border-color: rgba(155, 93, 229, 0.5);
+  }
+
+  .record-card.active {
+    background: rgba(155, 93, 229, 0.15);
+    border-color: var(--record-purple);
+    box-shadow: 0 0 25px rgba(155, 93, 229, 0.3);
+  }
+
+  .record-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .record-cover {
+    width: clamp(60px, 15vw, 80px);
+    height: clamp(60px, 15vw, 80px);
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--record-purple) 0%, var(--record-pink) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .record-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .record-title {
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.3;
+  }
+
+  .record-meta {
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    color: var(--record-blue);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .record-meta i {
+    font-size: 0.8rem;
+  }
+
+  .record-description {
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+  }
+
+  .record-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    color: var(--record-green);
+  }
+
+  /* Record Tags */
+  .record-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .record-tag {
+    background: rgba(155, 93, 229, 0.2);
+    color: var(--record-purple);
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .record-tag:hover {
+    background: rgba(155, 93, 229, 0.4);
+    transform: scale(1.05);
+  }
+
+  /* Now Playing Bar - Responsive */
+  .now-playing {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(10, 10, 31, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 0.8rem 1rem;
+    border-top: 2px solid var(--record-purple);
+    z-index: 1000;
+    display: none;
+    box-sizing: border-box;
+  }
+
+  .now-playing.active {
+    display: block;
+    animation: slideUp 0.5s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .now-playing-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .now-playing-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .now-playing-cover {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--record-purple) 0%, var(--record-pink) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .now-playing-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .now-playing-text h4 {
+    margin: 0;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    color: white;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .now-playing-text p {
+    margin: 0;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    color: var(--record-blue);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Controls - Responsive */
+  .player-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  .control-btn {
+    width: clamp(40px, 10vw, 45px);
+    height: clamp(40px, 10vw, 45px);
+    border-radius: 50%;
+    background: rgba(155, 93, 229, 0.2);
+    border: 2px solid var(--record-purple);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    flex-shrink: 0;
+  }
+
+  .control-btn:hover {
+    background: var(--record-purple);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(155, 93, 229, 0.5);
+  }
+
+  .control-btn.play-pause {
+    width: clamp(50px, 12.5vw, 60px);
+    height: clamp(50px, 12.5vw, 60px);
+    background: var(--record-purple);
+    font-size: clamp(1.3rem, 3.5vw, 1.5rem);
+  }
+
+  /* Footer - Responsive */
+  .footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    margin-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-heart {
+    color: var(--record-pink);
+    animation: heartbeat 1.5s ease infinite;
+    display: inline-block;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  /* Touch-friendly improvements for mobile */
+  @media (max-width: 768px) {
+    .player-arm {
+      display: none;
+    }
+    
+    .record-card {
+      padding: 1rem;
+    }
+    
+    .record-header {
+      gap: 0.8rem;
+    }
+    
+    .record-stats {
+      gap: 0.5rem;
+    }
+    
+    .control-btn {
+      min-width: 44px;
+      min-height: 44px;
+    }
+    
+    .control-btn.play-pause {
+      min-width: 54px;
+      min-height: 54px;
+    }
+    
+    .now-playing-content {
+      gap: 0.5rem;
+    }
+  }
+
+  /* Tablet specific adjustments */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .records-shelf {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .now-playing-content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .player-controls {
+      width: auto;
+    }
+  }
+
+  /* Desktop adjustments */
+  @media (min-width: 1025px) {
+    .records-shelf {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .now-playing-content {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .player-controls {
+      width: auto;
+    }
+  }
+
+  /* Very small phones */
+  @media (max-width: 380px) {
+    .records-shelf {
+      grid-template-columns: 1fr;
+    }
+    
+    .record-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.5rem;
+    }
+    
+    .record-cover {
+      width: 70px;
+      height: 70px;
+    }
+    
+    .record-info {
+      text-align: center;
+    }
+    
+    .record-stats {
+      justify-content: center;
+    }
+    
+    .record-tags {
+      justify-content: center;
+    }
+    
+    .now-playing-info {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.5rem;
+    }
+    
+    .now-playing-text h4,
+    .now-playing-text p {
+      white-space: normal;
+      text-align: center;
+    }
+  }
+
+  /* Landscape mode adjustments */
+  @media (max-height: 600px) and (orientation: landscape) {
+    .page-header {
+      padding-top: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .vinyl-player {
+      width: 250px;
+      height: 250px;
+      margin: 0.5rem auto;
+    }
+    
+    .records-shelf {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .record-card {
+      padding: 0.8rem;
+    }
+    
+    .footer {
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  /* Decorative Elements */
+  .record-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      var(--record-purple) 0%,
+      var(--record-pink) 25%,
+      var(--record-blue) 50%,
+      var(--record-green) 75%,
+      var(--record-yellow) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .record-card:hover::before,
+  .record-card.active::before {
+    opacity: 1;
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) {
+    .record-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .control-btn:hover {
+      transform: none;
+    }
+    
+    .record-tag:hover {
+      transform: none;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Vinyl Record Background -->
+<div class="records-background" id="recordsBackground"></div>
+
+<!-- Back Button -->
+<a href="mainpage.html" class="back-button">
+  <i class="fas fa-arrow-left"></i>
+  <span>Back💖</span>
+</a>
+
+<!-- Main Content -->
+<div class="main-container">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title"> Just 4-u babe🎵💕</h1>
+    <p class="page-subtitle">
+      🎧 Each record are just for you. Play this whenever you miss my voice babe 🎶
+    </p>
+  </div>
+
+  <!-- Records Player -->
+  <div class="player-container">
+    <div class="vinyl-player">
+      <div class="record-disc" id="recordDisc">
+        <div class="record-grooves" id="recordGrooves"></div>
+        <div class="record-label">
+          <div class="record-center"></div>
+        </div>
+      </div>
+      <div class="player-arm" id="playerArm">
+        <div class="arm-base"></div>
+        <div class="arm-rod"></div>
+        <div class="arm-head"></div>
+      </div>
+    </div>
+
+    <!-- Records Shelf -->
+    <div class="records-shelf" id="recordsShelf">
+      
+      <!-- Record 1 -->
+      <div class="record-card" data-record-id="1" data-video="records/dikomaiwasan.mp4">
+        <div class="record-header">
+          <div class="record-cover">💭</div>
+          <div class="record-info">
+            <div class="record-title">Museo - Eliza Maturan 🌙✨</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>00:34 • I Love you babe ~</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+          When the world sleeps and whenever my mind thinks of your face... 🌌💫
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-heart"></i>
+            <span>thinking of you 💕</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-moon"></i>
+            <span>Everyday 🌃</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Romantic 💘</span>
+          <span class="record-tag">Thoughtful 🤔</span>
+          <span class="record-tag">Whispered Secrets 🤫</span>
+        </div>
+      </div>
+
+      <!-- Record 2 -->
+      <div class="record-card" data-record-id="2" data-video="records/halikarito.mp4">
+        <div class="record-header">
+          <div class="record-cover">☀️</div>
+          <div class="record-info">
+            <div class="record-title">Dilaw - Janice 🌞🌻</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>00:50 • Missed me?</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+          It's okay babe, I'm always here for you... ☕️✨ Always remember that there's someone you can turn to, you can call "HOME" 💛
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-sun"></i>
+            <span>Morning Vibes 🌅</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-coffee"></i>
+            <span>Good Day Starter 🌤️</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Cheer Up 😊</span>
+          <span class="record-tag">Calm Down ☀️</span>
+          <span class="record-tag">Positive Vibes ✨</span>
+        </div>
+      </div>
+
+      <!-- Record 3 -->
+      <div class="record-card" data-record-id="3" data-video="records/i.mp4">
+        <div class="record-header">
+          <div class="record-cover">🎁</div>
+          <div class="record-info">
+            <div class="record-title">I thought I saw your face today - She and Him 🎀💖</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>00:42 • Just missed you babe</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+          No special occasion needed! 🎉 Just a spontaneous "I missed you" because you're always on my mind! 🌟 You make every day special! 💝
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-star"></i>
+            <span>I missed you! 🎯</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-gift"></i>
+            <span>Just Because 🎁</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Spontaneous 🎈</span>
+          <span class="record-tag">Heartfelt 💓</span>
+          <span class="record-tag">Love Bomb 💣</span>
+        </div>
+      </div>
+
+      <!-- Record 4 -->
+      <div class="record-card" data-record-id="4" data-video="records/kapagmaputi.mp4">
+        <div class="record-header">
+          <div class="record-cover">📸</div>
+          <div class="record-info">
+            <div class="record-title">Kahit maputi na ang buhok ko 🎞️💫</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>02:06 • A promise to remember</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+          Our journey might be full of bumps but..💕 Every moment with you is gonna be special, and I want to spend a lifetime with you, mwapss! ✨
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-history"></i>
+            <span>Until Old with you ⏳</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-memory"></i>
+            <span>Precious 💎</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Nostalgic 🕰️</span>
+          <span class="record-tag">Memories 🎞️</span>
+          <span class="record-tag">Our Story 📖</span>
+        </div>
+      </div>
+
+      <!-- Record 5 -->
+      <div class="record-card" data-record-id="5" data-video="records/sagip.mp4">
+        <div class="record-header">
+          <div class="record-cover">🤗 </div>
+          <div class="record-info">
+            <div class="record-title">Sagip 💕</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>00:30 • Will always be here for you</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+          Remember when I couldn't hug you, Play this so you will remember that I am always there for you...💕
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-laugh"></i>
+            <span>Hard Times 🎪</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-smile"></i>
+            <span>Mwapss 😁</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Hard Times 💕</span>
+        </div>
+      </div>
+
+      <!-- Record 6 -->
+      <div class="record-card" data-record-id="6" data-video="records/staytiltheend.mp4">
+        <div class="record-header">
+          <div class="record-cover">😊</div>
+          <div class="record-info">
+            <div class="record-title">Happiness by Rex Orange County🌟</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>01:29 • Will stay til the end</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+         where everyone left and abandons, I'll be the one to stay by your side no matter what 🌌💫
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-heart"></i>
+            <span>thinking of you 💕</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-moon"></i>
+            <span>Everyday 🌃</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Romantic 💘</span>
+          <span class="record-tag">Consistent 🤫</span>
+        </div>
+      </div>
+
+      <!-- Record 7 -->
+      <div class="record-card" data-record-id="7" data-video="records/watchthesun.mp4">
+        <div class="record-header">
+          <div class="record-cover">🌅</div>
+          <div class="record-info">
+            <div class="record-title">Here with Me - D4VD🌟</div>
+            <div class="record-meta">
+              <i class="fas fa-clock"></i>
+              <span>01:10 • Sunrise with you</span>
+            </div>
+          </div>
+        </div>
+        <div class="record-description">
+         I will always remember you whenever the sunrise came as I really want to spend time with you again... 🌌💫
+        </div>
+        <div class="record-stats">
+          <div class="stat">
+            <i class="fas fa-heart"></i>
+            <span>Sunrise with you 💕</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-moon"></i>
+            <span>Every Sunset 🌃</span>
+          </div>
+        </div>
+        <div class="record-tags">
+          <span class="record-tag">Romantic 💘</span>
+          <span class="record-tag">Love you always 🤫</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Now Playing Bar -->
+  <div class="now-playing" id="nowPlaying">
+    <div class="now-playing-content">
+      <div class="now-playing-info">
+        <div class="now-playing-cover" id="nowPlayingCover">🎵</div>
+        <div class="now-playing-text">
+          <h4 id="nowPlayingTitle">Select a record to play</h4>
+          <p id="nowPlayingDesc">Click any memory record above</p>
+        </div>
+      </div>
+      <div class="player-controls">
+        <button class="control-btn" onclick="skipBack()">
+          <i class="fas fa-step-backward"></i>
+        </button>
+        <button class="control-btn play-pause" onclick="togglePlayPause()" id="playPauseBtn">
+          <i class="fas fa-play" id="playPauseIcon"></i>
+        </button>
+        <button class="control-btn" onclick="skipForward()">
+          <i class="fas fa-step-forward"></i>
+        </button>
+        <button class="control-btn" onclick="stopRecord()">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Video Player -->
+  <div style="display: none;">
+    <video id="audioPlayer" controls>
+      Your browser does not support the audio element.
+    </video>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>
+      Made with <span class="footer-heart">💝</span> for the one who makes my heart sing 🎶 • 
+      Each record is a piece of our story 📀
+    </p>
+    <p class="mt-2 text-sm opacity-70">
+      🎧 Click any record to play • 🎶 Only one plays at a time • 💖 Made with love
+    </p>
+    <div class="mt-4 flex justify-center gap-4">
+      <span class="text-record-purple">🎵</span>
+      <span class="text-record-pink">💕</span>
+      <span class="text-record-blue">✨</span>
+      <span class="text-record-green">🌟</span>
+      <span class="text-record-yellow">🎶</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // DOM Elements
+  const recordsBackground = document.getElementById('recordsBackground');
+  const recordDisc = document.getElementById('recordDisc');
+  const playerArm = document.getElementById('playerArm');
+  const recordGrooves = document.getElementById('recordGrooves');
+  const recordsShelf = document.getElementById('recordsShelf');
+  const nowPlaying = document.getElementById('nowPlaying');
+  const audioPlayer = document.getElementById('audioPlayer');
+  const nowPlayingTitle = document.getElementById('nowPlayingTitle');
+  const nowPlayingDesc = document.getElementById('nowPlayingDesc');
+  const nowPlayingCover = document.getElementById('nowPlayingCover');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const playPauseIcon = document.getElementById('playPauseIcon');
+  
+  // State
+  let currentRecord = null;
+  let isPlaying = false;
+  
+  // Get total number of records dynamically
+  function getTotalRecords() {
+    return document.querySelectorAll('.record-card').length;
+  }
+
+  // Create vinyl grooves
+  function createGrooves() {
+    recordGrooves.innerHTML = '';
+    for(let i = 1; i <= 15; i++) {
+      const groove = document.createElement('div');
+      groove.className = 'groove';
+      groove.style.width = `${100 + i * 6}%`;
+      groove.style.height = `${100 + i * 6}%`;
+      recordGrooves.appendChild(groove);
+    }
+  }
+
+  // Create background vinyl rings
+  function createBackgroundRings() {
+    recordsBackground.innerHTML = '';
+    const ringCount = window.innerWidth < 768 ? 8 : 12;
+    
+    for(let i = 1; i <= ringCount; i++) {
+      const ring = document.createElement('div');
+      ring.className = 'vinyl-ring';
+      const size = 50 + i * 40;
+      ring.style.width = `${size}px`;
+      ring.style.height = `${size}px`;
+      ring.style.top = `${Math.random() * 100}%`;
+      ring.style.left = `${Math.random() * 100}%`;
+      ring.style.animationDelay = `${Math.random() * 5}s`;
+      ring.style.animationDuration = `${20 + Math.random() * 20}s`;
+      recordsBackground.appendChild(ring);
+    }
+  }
+
+  // Play record
+  function playRecord(recordId) {
+    const recordCard = document.querySelector(`[data-record-id="${recordId}"]`);
+    if (!recordCard) {
+      console.error(`Record ${recordId} not found`);
+      return;
+    }
+    
+    const videoSrc = recordCard.getAttribute('data-video');
+    const recordTitle = recordCard.querySelector('.record-title').textContent;
+    const recordCover = recordCard.querySelector('.record-cover').textContent;
+    
+    // Reset previous active record
+    document.querySelectorAll('.record-card').forEach(card => {
+      card.classList.remove('active');
+    });
+    
+    // Set current record as active
+    recordCard.classList.add('active');
+    
+    // Update audio player source
+    audioPlayer.src = videoSrc;
+    
+    // Update now playing info
+    nowPlayingTitle.textContent = recordTitle;
+    nowPlayingDesc.textContent = "Playing... 🎶";
+    nowPlayingCover.textContent = recordCover;
+    
+    // Start playback
+    audioPlayer.play().then(() => {
+      isPlaying = true;
+      playPauseIcon.className = 'fas fa-pause';
+      recordDisc.classList.add('spinning');
+      playerArm.classList.add('playing');
+      nowPlaying.classList.add('active');
+      currentRecord = recordId;
+      
+      // Scroll record into view on mobile
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          recordCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+    }).catch(e => {
+      console.log("Autoplay prevented:", e);
+      // Show instructions for user interaction
+      nowPlayingDesc.textContent = "Click play button to start 🎵";
+      // Still set as active for visual feedback
+      recordDisc.classList.add('spinning');
+      playerArm.classList.add('playing');
+      nowPlaying.classList.add('active');
+      currentRecord = recordId;
+    });
+  }
+
+  // Toggle play/pause
+  function togglePlayPause() {
+    if (!currentRecord) {
+      // If nothing is playing, play the first record
+      playRecord(1);
+      return;
+    }
+    
+    if (isPlaying) {
+      audioPlayer.pause();
+      playPauseIcon.className = 'fas fa-play';
+      recordDisc.classList.remove('spinning');
+      nowPlayingDesc.textContent = "Paused ⏸️";
+    } else {
+      audioPlayer.play().then(() => {
+        playPauseIcon.className = 'fas fa-pause';
+        recordDisc.classList.add('spinning');
+        nowPlayingDesc.textContent = "Playing... 🎶";
+      }).catch(e => {
+        // If autoplay fails, show message
+        nowPlayingDesc.textContent = "Click play again to start 🎵";
+      });
+    }
+    isPlaying = !isPlaying;
+  }
+
+  // Stop record
+  function stopRecord() {
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+    isPlaying = false;
+    playPauseIcon.className = 'fas fa-play';
+    recordDisc.classList.remove('spinning');
+    playerArm.classList.remove('playing');
+    nowPlaying.classList.remove('active');
+    document.querySelectorAll('.record-card').forEach(card => {
+      card.classList.remove('active');
+    });
+    currentRecord = null;
+  }
+
+  // Skip to next record
+  function skipForward() {
+    if (!currentRecord) {
+      playRecord(1);
+      return;
+    }
+    
+    const totalRecords = getTotalRecords();
+    let nextId = parseInt(currentRecord) + 1;
+    if (nextId > totalRecords) nextId = 1;
+    playRecord(nextId);
+  }
+
+  // Skip to previous record
+  function skipBack() {
+    if (!currentRecord) {
+      const totalRecords = getTotalRecords();
+      playRecord(totalRecords);
+      return;
+    }
+    
+    const totalRecords = getTotalRecords();
+    let prevId = parseInt(currentRecord) - 1;
+    if (prevId < 1) prevId = totalRecords;
+    playRecord(prevId);
+  }
+
+  // Handle record card clicks
+  document.querySelectorAll('.record-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't trigger if clicking on a button inside the card
+      if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        return;
+      }
+      
+      const recordId = card.getAttribute('data-record-id');
+      
+      // If clicking the same record that's playing, toggle play/pause
+      if (currentRecord === recordId) {
+        togglePlayPause();
+      } else {
+        playRecord(recordId);
+      }
+    });
+  });
+
+  // Handle audio player events
+  audioPlayer.addEventListener('play', () => {
+    isPlaying = true;
+    playPauseIcon.className = 'fas fa-pause';
+    recordDisc.classList.add('spinning');
+    playerArm.classList.add('playing');
+    nowPlayingDesc.textContent = "Playing... 🎶";
+  });
+
+  audioPlayer.addEventListener('pause', () => {
+    isPlaying = false;
+    playPauseIcon.className = 'fas fa-play';
+    recordDisc.classList.remove('spinning');
+    if (audioPlayer.currentTime === audioPlayer.duration) {
+      nowPlayingDesc.textContent = "Finished ✅";
+    } else {
+      nowPlayingDesc.textContent = "Paused ⏸️";
+    }
+  });
+
+  audioPlayer.addEventListener('ended', () => {
+    isPlaying = false;
+    playPauseIcon.className = 'fas fa-play';
+    recordDisc.classList.remove('spinning');
+    nowPlayingDesc.textContent = "Finished ✅";
+    setTimeout(() => {
+      skipForward();
+    }, 2000);
+  });
+
+  // Touch event handling for mobile
+  let touchStartX = 0;
+  let touchStartY = 0;
+  
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  });
+  
+  document.addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    
+    // Swipe detection (only horizontal swipes that aren't too vertical)
+    if (Math.abs(diffX) > 50 && Math.abs(diffY) < 30) {
+      e.preventDefault();
+      if (diffX > 0) {
+        // Swipe right - previous track
+        skipBack();
+      } else {
+        // Swipe left - next track
+        skipForward();
+      }
+    }
+  });
+
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    const totalRecords = getTotalRecords();
+    
+    switch(e.key) {
+      case ' ':
+        e.preventDefault();
+        togglePlayPause();
+        break;
+      case 'Escape':
+        stopRecord();
+        break;
+      case 'ArrowRight':
+        skipForward();
+        break;
+      case 'ArrowLeft':
+        skipBack();
+        break;
+      case '1': case '2': case '3': case '4': case '5': case '6': case '7':
+        const num = parseInt(e.key);
+        if (num <= totalRecords) {
+          playRecord(num);
+        }
+        break;
+    }
+  });
+
+  // Initialize
+  function init() {
+    createBackgroundRings();
+    createGrooves();
+    
+    // Adjust arm position on mobile
+    if (window.innerWidth < 768) {
+      playerArm.style.display = 'none';
+    }
+    
+    // Preload first video for better UX
+    audioPlayer.preload = 'metadata';
+    
+    // Add emoji tooltips on hover
+    document.querySelectorAll('.record-cover').forEach(cover => {
+      cover.title = "Click to play this memory! 🎵";
+    });
+  }
+
+  // Handle window resize
+  function handleResize() {
+    createBackgroundRings();
+    createGrooves();
+    
+    // Show/hide player arm based on screen size
+    if (window.innerWidth < 768) {
+      playerArm.style.display = 'none';
+    } else {
+      playerArm.style.display = 'block';
+    }
+  }
+
+  // Start when page loads
+  document.addEventListener('DOMContentLoaded', init);
+  window.addEventListener('resize', handleResize);
+
+  // Update time display
+  setInterval(() => {
+    if (isPlaying && audioPlayer.duration && !isNaN(audioPlayer.duration)) {
+      const current = formatTime(audioPlayer.currentTime);
+      const total = formatTime(audioPlayer.duration);
+      nowPlayingDesc.textContent = `Playing ${current} / ${total} 🎶`;
+    }
+  }, 1000);
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
+</script>
+
+</body>
+</html>

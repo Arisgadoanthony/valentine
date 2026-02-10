@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You - Valentine's Special</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
+
+<style>
+  /* 🔒 LOCK PAGE SCROLL & ZOOM */
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Valentine Theme Colors */
+  :root {
+    --valentine-pink: #e91e63;
+    --valentine-dark-pink: #c2185b;
+    --valentine-light-pink: #f8bbd9;
+    --valentine-red: #d32f2f;
+    --valentine-rose: #ff4081;
+  }
+
+  /* 🎥 FULLSCREEN SPLINE */
+  spline-viewer {
+    width: 100vw;
+    height: 100vh;
+    touch-action: manipulation;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  /* Valentine Background Elements */
+  .hearts-container, .petals-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--valentine-pink) 0%, var(--valentine-rose) 100%);
+    transform: rotate(-45deg);
+    animation: floatHeart 8s infinite ease-in-out;
+  }
+
+  .heart::before, .heart::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, var(--valentine-pink) 0%, var(--valentine-rose) 100%);
+    border-radius: 50%;
+  }
+
+  .heart::before { top: -10px; left: 0; }
+  .heart::after { left: 10px; top: 0; }
+
+  @keyframes floatHeart {
+    0%, 100% { transform: translateY(0) rotate(-45deg) scale(1); }
+    50% { transform: translateY(-20px) rotate(-45deg) scale(1.1); }
+  }
+
+  /* Floating rose petals */
+  .petal {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    background: linear-gradient(135deg, #ff5a7a 30%, #ffb8c6 100%);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    animation: floatPetal 12s infinite linear;
+    opacity: 0.7;
+  }
+
+  @keyframes floatPetal {
+    0% {
+      transform: translateY(0) rotate(-30deg);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Glitter effect */
+  .glitter {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: glitter 3s infinite ease-in-out;
+  }
+
+  @keyframes glitter {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* 🧭 UI Layer */
+  .ui-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    pointer-events: none;
+  }
+
+  .ui-layer * {
+    pointer-events: auto;
+  }
+
+  /* Main Navigation Container */
+  .nav-container {
+    position: absolute;
+    top: 50%;
+    left: 2rem;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+  }
+
+  /* Intro Text */
+  .intro-text {
+    color: white;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(233, 30, 99, 0.2);
+    border-radius: 12px;
+    border-left: 4px solid var(--valentine-pink);
+  }
+
+  .intro-text .heart-icon {
+    color: var(--valentine-pink);
+    margin-right: 0.5rem;
+  }
+
+  /* Navigation Buttons */
+  .nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav-button {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+
+  .nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+  }
+
+  .nav-button:hover::before {
+    left: 100%;
+  }
+
+  .nav-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-button i {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-button:hover i {
+    transform: scale(1.2);
+  }
+
+  /* Individual button colors */
+  .nav-button-letter {
+    background: linear-gradient(135deg, var(--valentine-pink) 0%, #ff4081 100%);
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+  }
+
+  .nav-button-letter:hover {
+    background: linear-gradient(135deg, var(--valentine-dark-pink) 0%, var(--valentine-pink) 100%);
+  }
+
+  .nav-button-album {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.4);
+  }
+
+  .nav-button-album:hover {
+    background: linear-gradient(135deg, #7b1fa2 0%, #512da8 100%);
+  }
+
+  .nav-button-video {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+  }
+
+  .nav-button-video:hover {
+    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+  }
+
+  .nav-button-records {
+    background: linear-gradient(135deg, #f3e221 0%, #c8d32f 100%);
+    box-shadow: 0 4px 15px rgba(243, 226, 33, 0.4);
+  }
+
+  .nav-button-records:hover {
+    background: linear-gradient(135deg, #d0a721 0%, #b7931c 100%);
+  }
+  .nav-button-diary {
+    background: linear-gradient(135deg, #3af321 0%, #2fd34a 100%);
+    box-shadow: 0 4px 15px rgba(100, 243, 33, 0.4);
+  }
+
+  .nav-button-diary:hover {
+    background: linear-gradient(135deg, #2fd34a 0%, #1c8c2f 100%);
+  }
+  .nav-button-logout {
+    background: linear-gradient(135deg, #f32121 0%, #d32f2f 100%);
+    box-shadow: 0 4px 15px rgba(243, 33, 33, 0.4);
+  }
+
+  .nav-button-logout:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  }
+
+  /* Page Title */
+  .page-title {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    color: white;
+    text-align: right;
+    z-index: 51;
+  }
+
+  .page-title h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #fff 0%, var(--valentine-light-pink) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-title p {
+    font-size: 1rem;
+    opacity: 0.9;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 100;
+    background: var(--valentine-pink);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    background: var(--valentine-dark-pink);
+    transform: scale(1.1);
+  }
+
+  /* Footer Note */
+  .footer-note {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    z-index: 51;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .nav-container {
+      left: 1rem;
+      max-width: 280px;
+    }
+    
+    .page-title {
+      right: 1rem;
+    }
+    
+    .page-title h1 {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-container {
+      position: fixed;
+      top: 400px;
+      left: -100%;
+      margin-left: 10px;
+      height: auto;
+      width: 280px;
+      max-width: 100%;
+      border-radius: 10px;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      transition: left 0.4s ease;
+      z-index: 99;
+      background: rgba(20, 0, 10, 0.95);
+      backdrop-filter: blur(20px);
+      padding-top: 5rem;
+    }
+    
+    .nav-container.active {
+      left: 0;
+    }
+    
+    .mobile-menu-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .page-title {
+      top: 1.5rem;
+      right: 1rem;
+      text-align: center;
+      width: calc(100% - 100px);
+      left: 70px;
+    }
+    
+    .page-title h1 {
+      font-size: 1.8rem;
+    }
+    
+    .intro-text {
+      font-size: 1rem;
+    }
+    
+    .nav-button {
+      padding: 0.9rem 1.2rem;
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title h1 {
+      font-size: 1.5rem;
+    }
+    
+    .page-title p {
+      font-size: 0.9rem;
+    }
+    
+    .footer-note {
+      font-size: 0.8rem;
+      width: 90%;
+    }
+  }
+
+  /* Spline Overlay */
+  .spline-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--valentine-pink);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--valentine-dark-pink);
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-900">
+
+<!-- Valentine Background Elements -->
+<div class="hearts-container" id="hearts-container"></div>
+<div class="petals-container" id="petals-container"></div>
+<div class="glitter-container" id="glitter-container"></div>
+
+<!-- Mobile Menu Toggle -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+  <i class="fas fa-bars" id="menuIcon"></i>
+</button>
+
+<!-- 🧭 UI Layer -->
+<div class="ui-layer">
+  
+  <!-- Main Navigation Container -->
+  <div class="nav-container" id="navContainer">
+    
+    <!-- Intro Text -->
+    <div class="intro-text">
+      <i class="fas fa-heart heart-icon"></i>
+      A special place for someone who holds a special place in my heart. 
+      Made to be explored slowly and cherished together.
+    </div>
+    
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <a href="letter.html" class="nav-button nav-button-letter">
+        <i class="fas fa-envelope-open-text"></i>
+        <span>Love Letter</span>
+      </a>
+      
+      <a href="album.html" class="nav-button nav-button-album">
+        <i class="fas fa-images"></i>
+        <span>Photo Album</span>
+      </a>
+      
+      <a href="vid.html" class="nav-button nav-button-video">
+        <i class="fas fa-video"></i>
+        <span>Special Video</span>
+      </a>
+
+      <a href="records.html" class="nav-button nav-button-records">
+        <i class="fas fa-music"></i>
+        <span>Records</span>
+      </a>
+
+      <a href="diary.html" class="nav-button nav-button-diary">
+        <i class="fas fa-book"></i>
+        <span>Diary</span>
+      </a>
+
+      <a href="index.html" class="nav-button nav-button-logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Page Title -->
+  <div class="page-title">
+    <h1>For You 💝</h1>
+    <p>A Valentine's Journey</p>
+  </div>
+  
+  <!-- Footer Note -->
+  <div class="footer-note">
+    Made with <i class="fas fa-heart" style="color: #e91e63;"></i> for someone special
+  </div>
+</div>
+
+<!-- 🌸 SPLINE SCENE -->
+<spline-viewer
+  class="fixed"
+  url="https://prod.spline.design/U9O6K7fXziMEU7Wu/scene.splinecode">
+</spline-viewer>
+
+<!-- Spline Overlay for better UI visibility -->
+<div class="spline-overlay"></div>
+
+<script>
+  /* 🚫 PREVENT BODY WHEEL ZOOM / SCROLL */
+  window.addEventListener("wheel", (e) => {
+    if (!e.target.closest("spline-viewer")) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener("touchmove", (e) => {
+    if (!e.target.closest("spline-viewer")) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // DOM Elements
+  const heartsContainer = document.getElementById("hearts-container");
+  const petalsContainer = document.getElementById("petals-container");
+  const glitterContainer = document.getElementById("glitter-container");
+  const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+  const navContainer = document.getElementById("navContainer");
+  const menuIcon = document.getElementById("menuIcon");
+
+  // Create floating hearts
+  function createHearts() {
+    // Adjust number of hearts based on screen size
+    const heartCount = window.innerWidth < 768 ? 15 : 25;
+    
+    for(let i = 0; i < heartCount; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      
+      // Random position
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.top = Math.random() * window.innerHeight + 'px';
+      
+      // Random size
+      const size = 15 + Math.random() * 15;
+      heart.style.width = size + 'px';
+      heart.style.height = size + 'px';
+      
+      // Random animation delay
+      heart.style.animationDelay = Math.random() * 5 + 's';
+      
+      // Random opacity
+      heart.style.opacity = 0.5 + Math.random() * 0.5;
+      
+      heartsContainer.appendChild(heart);
+    }
+  }
+
+  // Create floating rose petals
+  function createPetals() {
+    // Adjust number of petals based on screen size
+    const petalCount = window.innerWidth < 768 ? 20 : 35;
+    
+    for(let i = 0; i < petalCount; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      
+      // Random position
+      petal.style.left = Math.random() * window.innerWidth + 'px';
+      
+      // Random size
+      const size = 8 + Math.random() * 10;
+      petal.style.width = size + 'px';
+      petal.style.height = size * 1.3 + 'px';
+      
+      // Random animation duration and delay
+      const duration = 8 + Math.random() * 12;
+      const delay = Math.random() * 15;
+      petal.style.animationDuration = duration + 's';
+      petal.style.animationDelay = delay + 's';
+      
+      // Random color variation
+      const hue = 330 + Math.random() * 20;
+      petal.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 70%) 30%, hsl(${hue}, 100%, 85%) 100%)`;
+      
+      petalsContainer.appendChild(petal);
+    }
+  }
+
+  // Create glitter effect
+  function createGlitter() {
+    // Adjust number of glitter particles based on screen size
+    const glitterCount = window.innerWidth < 768 ? 30 : 50;
+    
+    for(let i = 0; i < glitterCount; i++) {
+      const glitter = document.createElement('div');
+      glitter.className = 'glitter';
+      
+      // Random position
+      glitter.style.left = Math.random() * window.innerWidth + 'px';
+      glitter.style.top = Math.random() * window.innerHeight + 'px';
+      
+      // Random animation delay
+      glitter.style.animationDelay = Math.random() * 3 + 's';
+      
+      // Random size
+      const size = 2 + Math.random() * 4;
+      glitter.style.width = size + 'px';
+      glitter.style.height = size + 'px';
+      
+      glitterContainer.appendChild(glitter);
+    }
+  }
+
+  // Mobile menu toggle
+  function toggleMobileMenu() {
+    navContainer.classList.toggle('active');
+    
+    // Change icon based on menu state
+    if (navContainer.classList.contains('active')) {
+      menuIcon.className = 'fas fa-times';
+    } else {
+      menuIcon.className = 'fas fa-bars';
+    }
+  }
+
+  // Close mobile menu when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+      const isClickInsideNav = navContainer.contains(e.target);
+      const isClickOnToggle = mobileMenuToggle.contains(e.target);
+      
+      if (!isClickInsideNav && !isClickOnToggle && navContainer.classList.contains('active')) {
+        toggleMobileMenu();
+      }
+    }
+  });
+
+  // Handle window resize
+  function handleResize() {
+    // Clear existing elements
+    heartsContainer.innerHTML = '';
+    petalsContainer.innerHTML = '';
+    glitterContainer.innerHTML = '';
+    
+    // Recreate with new dimensions
+    createHearts();
+    createPetals();
+    createGlitter();
+    
+    // Auto-close mobile menu when switching to desktop
+    if (window.innerWidth > 768 && navContainer.classList.contains('active')) {
+      navContainer.classList.remove('active');
+      menuIcon.className = 'fas fa-bars';
+    }
+  }
+
+  // Add keyboard controls
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && window.innerWidth <= 768 && navContainer.classList.contains('active')) {
+      toggleMobileMenu();
+    }
+  });
+
+  // Initialize everything
+  function init() {
+    createHearts();
+    createPetals();
+    createGlitter();
+    
+    // Add event listeners
+    mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+    window.addEventListener('resize', handleResize);
+    
+    // Add a subtle entrance animation to the UI
+    setTimeout(() => {
+      document.querySelector('.nav-container').style.opacity = '1';
+      document.querySelector('.page-title').style.opacity = '1';
+    }, 300);
+  }
+
+  // Start when page loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

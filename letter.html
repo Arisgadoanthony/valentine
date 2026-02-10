@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine's Love Letters</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  /* ===============================
+      Body + general
+  =============================== */
+  body {
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(ellipse at center, #2a0a1a 0%, #0a0005 100%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    padding: 20px;
+  }
+
+  /* ===============================
+      Back button
+  =============================== */
+  .back-button {
+    position: fixed;
+    top:1rem;
+    left:1rem;
+    z-index:999;
+    padding:0.75rem 1.5rem;
+    background: linear-gradient(135deg, #ff5a7a 0%, #d10047 100%);
+    color:white;
+    border-radius:0.75rem;
+    font-weight:500;
+    text-decoration:none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 90, 122, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .back-button:hover { 
+    background: linear-gradient(135deg, #ff3a6a 0%, #b00030 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 90, 122, 0.4);
+  }
+
+  /* ===============================
+      Main Menu Container
+  =============================== */
+  .main-menu {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2.5rem 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+    text-align: center;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .menu-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    color: #ff5a7a;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .menu-subtitle {
+    color: #ffb8c6;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  /* ===============================
+      Button Grid - 2 per line
+  =============================== */
+  .button-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 2.5rem;
+  }
+
+  .menu-btn {
+    background: linear-gradient(135deg, rgba(255, 90, 122, 0.9) 0%, rgba(209, 0, 71, 0.9) 100%);
+    color: white;
+    border: none;
+    padding: 1.2rem 0.8rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 100px;
+    box-shadow: 0 6px 12px rgba(255, 90, 122, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .menu-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+  }
+
+  .menu-btn:hover::before {
+    left: 100%;
+  }
+
+  .menu-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 90, 122, 0.3);
+    background: linear-gradient(135deg, rgba(255, 90, 122, 1) 0%, rgba(209, 0, 71, 1) 100%);
+  }
+
+  .menu-btn i {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+  }
+
+  .menu-btn span {
+    font-weight: 500;
+  }
+
+  /* ===============================
+      Letter Envelope Animation
+  =============================== */
+  .letter-envelope-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, #2a0a1a 0%, #0a0005 100%);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .letter-envelope-container.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .letter-envelope {
+    position: relative;
+    width: 250px;
+    height: 166px;
+    cursor: pointer;
+    transition: all 0.8s ease;
+  }
+
+  .letter-envelope:hover {
+    transform: translateY(-5px);
+  }
+
+  .letter-envelope-body {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    border-left: 125px solid transparent;
+    border-right: 125px solid transparent;
+    border-bottom: 83px solid #c9a66b;
+    z-index: 1;
+  }
+
+  .letter-envelope-flap {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-left: 125px solid transparent;
+    border-right: 125px solid transparent;
+    border-top: 83px solid #d4b57a;
+    transform-origin: top;
+    transition: transform 1s ease;
+    z-index: 2;
+  }
+
+  .letter-envelope.open .letter-envelope-flap {
+    transform: rotateX(180deg);
+  }
+
+  .letter-envelope-front {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 83px;
+    background: #d4b57a;
+    z-index: 0;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .letter-wax-seal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #d10047 0%, #a00030 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 20px rgba(255,0,100,0.7),
+                inset 0 4px 8px rgba(255,255,255,0.2);
+    font-size: 2rem;
+    color: #fff5f0;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.5s ease;
+    z-index: 3;
+    animation: letterPulse 2s infinite;
+  }
+
+  .letter-wax-seal:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 30px rgba(255,0,100,0.9),
+                inset 0 4px 12px rgba(255,255,255,0.3);
+  }
+
+  @keyframes letterPulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255,0,100,0.7),
+                  inset 0 4px 8px rgba(255,255,255,0.2);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255,0,100,0.9),
+                  inset 0 4px 12px rgba(255,255,255,0.3);
+    }
+  }
+
+  .letter-instruction {
+    position: absolute;
+    bottom: -40px;
+    width: 100%;
+    text-align: center;
+    color: #ffb8c6;
+    font-size: 1.1rem;
+    font-style: italic;
+    font-family: 'Dancing Script', cursive;
+  }
+
+  /* ===============================
+      Hearts background
+  =============================== */
+  .hearts, .small-hearts {
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    overflow:visible;
+    z-index:1;
+  }
+
+  /* Big hearts */
+  .heart {
+    position:absolute;
+    width:35px;
+    height:35px;
+    background: linear-gradient(135deg, #ff5a7a 0%, #ff3a6a 100%);
+    transform: rotate(-45deg);
+    cursor:pointer;
+    pointer-events:auto;
+    transition: all 0.5s ease;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(255, 90, 122, 0.4);
+    animation: floatHeart 6s infinite ease-in-out;
+  }
+  
+  .heart:hover {
+    transform: rotate(-45deg) scale(1.3);
+    box-shadow: 0 6px 20px rgba(255, 90, 122, 0.6);
+  }
+  
+  .heart::before, .heart::after {
+    content:'';
+    position:absolute;
+    width:35px;
+    height:35px;
+    background: linear-gradient(135deg, #ff5a7a 0%, #ff3a6a 100%);
+    border-radius:50%;
+    box-shadow: inherit;
+  }
+  .heart::before { top:-17.5px; left:0; }
+  .heart::after { left:17.5px; top:0; }
+
+  /* Heart float animation */
+  @keyframes floatHeart {
+    0%, 100% {
+      transform: translateY(0) rotate(-45deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(-45deg);
+    }
+  }
+
+  /* Small hearts */
+  .small-heart {
+    position:absolute;
+    width:8px;
+    height:8px;
+    background: linear-gradient(135deg, #ff5a7a 0%, #ff3a6a 100%);
+    transform: rotate(-45deg);
+    border-radius:2px;
+    opacity:0.7;
+    animation: floatSmall 8s infinite ease-in-out;
+  }
+  
+  .small-heart::before, .small-heart::after {
+    content:'';
+    position:absolute;
+    width:8px;
+    height:8px;
+    background: linear-gradient(135deg, #ff5a7a 0%, #ff3a6a 100%);
+    border-radius:50%;
+  }
+  .small-heart::before { top:-4px; left:0; }
+  .small-heart::after { left:4px; top:0; }
+
+  /* Small heart float animation */
+  @keyframes floatSmall {
+    0%, 100% {
+      transform: translateY(0) rotate(-45deg) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(-10px) rotate(-45deg) scale(1.1);
+      opacity: 0.9;
+    }
+  }
+
+  /* Rose petals */
+  .petal {
+    position: absolute;
+    width: 12px;
+    height: 16px;
+    background: linear-gradient(135deg, #ff5a7a 30%, #ffb8c6 100%);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+    opacity: 0.6;
+    animation: floatPetal 10s infinite linear;
+    z-index: 0;
+  }
+
+  @keyframes floatPetal {
+    0% {
+      transform: translateY(0) rotate(-30deg);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* ===============================
+      Modal Overlays
+  =============================== */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .letter-modal {
+    background: #fff8e0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 2.5rem;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid #e8d9c5;
+    font-family: 'Dancing Script', cursive;
+    background-image: 
+      linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+      linear-gradient(#eee .1em, transparent .1em);
+    background-size: 100% 1.8em;
+    border-top: 20px solid #f8f1e5;
+    border-left: 8px solid #f8f1e5;
+    border-right: 8px solid #f8f1e5;
+    border-bottom: 20px solid #f8f1e5;
+    animation: modalFadeIn 0.5s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 90, 122, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 11;
+  }
+
+  .close-modal:hover {
+    background: #b00030;
+    transform: rotate(90deg);
+  }
+
+  /* Letter content */
+  .letter-modal h1 {
+    font-size: 2.2rem;
+    color: #b0003a;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    border-bottom: 2px solid #ffcdd2;
+    padding-bottom: 10px;
+    position: relative;
+  }
+
+  .letter-modal h1::after {
+    content: "❤";
+    position: absolute;
+    right: 10px;
+    top: 0;
+    font-size: 1.5rem;
+    color: #ff5a7a;
+  }
+
+  .letter-modal h2 {
+    font-size: 1.8rem;
+    color: #b0003a;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-decoration: underline;
+    text-decoration-color: #ffcdd2;
+    text-underline-offset: 6px;
+  }
+
+  .letter-modal p {
+    margin-bottom: 1.2rem;
+    font-size: 1.4rem;
+    text-indent: 40px;
+    line-height: 1.8;
+  }
+
+  .letter-modal .signature {
+    text-align: right;
+    margin-top: 2rem;
+    font-size: 1.6rem;
+    color: #b0003a;
+    font-weight: bold;
+  }
+
+  .letter-modal .signature em {
+    display: block;
+    font-size: 1.4rem;
+    color: #ff5a7a;
+    margin-top: 5px;
+  }
+
+  /* Hide scrollbar */
+  .letter-modal::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .letter-modal::-webkit-scrollbar-track {
+    background: rgba(255, 90, 122, 0.1);
+    border-radius: 10px;
+  }
+  
+  .letter-modal::-webkit-scrollbar-thumb {
+    background: rgba(255, 90, 122, 0.5);
+    border-radius: 10px;
+  }
+  
+  .letter-modal::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 90, 122, 0.8);
+  }
+
+  /* ===============================
+      Comments Section - Improved Design
+  =============================== */
+  .comments-section {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 2px dashed #ffcdd2;
+  }
+
+  .comments-title {
+    font-size: 1.8rem;
+    color: #b0003a;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .comments-title i {
+    color: #ff5a7a;
+  }
+
+  .comment-form {
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #ffcdd2;
+    box-shadow: 0 4px 12px rgba(255, 90, 122, 0.1);
+  }
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ffcdd2;
+  }
+
+  .commenter-name {
+    font-weight: 600;
+    color: #b0003a;
+    font-size: 1.1rem;
+    font-family: 'Dancing Script', cursive;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #b0003a;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e8d9c5;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #ff5a7a;
+    box-shadow: 0 0 0 3px rgba(255, 90, 122, 0.1);
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, #ff5a7a 0%, #d10047 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .btn-submit:hover {
+    background: linear-gradient(135deg, #ff3a6a 0%, #b00030 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 90, 122, 0.3);
+  }
+
+  .btn-cancel {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .btn-cancel:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+    transform: translateY(-2px);
+  }
+
+  .btn-edit {
+    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+  }
+
+  .btn-edit:hover {
+    background: linear-gradient(135deg, #43A047 0%, #1B5E20 100%);
+    transform: translateY(-1px);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-delete:hover {
+    background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+    transform: translateY(-1px);
+  }
+
+  .comments-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+
+  .comment-item {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #e8d9c5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    animation: commentFadeIn 0.5s ease;
+  }
+
+  @keyframes commentFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0e6d2;
+  }
+
+  .comment-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .author-name {
+    font-weight: 600;
+    color: #b0003a;
+    font-size: 1.1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .author-badge {
+    background: linear-gradient(135deg, #ff5a7a 0%, #d10047 100%);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .comment-date {
+    font-size: 0.85rem;
+    color: #888;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .comment-content {
+    color: #333;
+    line-height: 1.6;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 0.75rem;
+  }
+
+  .comment-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .no-comments {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+    font-style: italic;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    border: 1px dashed #ffcdd2;
+  }
+
+  /* ===============================
+      Particle effects for heart click
+  =============================== */
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: linear-gradient(135deg, #ff5a7a 0%, #ffb8c6 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ===============================
+      Responsive Design
+  =============================== */
+  @media (max-width: 768px) {
+    .main-menu {
+      padding: 2rem 1rem;
+    }
+    
+    .menu-title {
+      font-size: 2.5rem;
+    }
+    
+    .menu-subtitle {
+      font-size: 1rem;
+    }
+    
+    .button-grid {
+      gap: 12px;
+    }
+    
+    .menu-btn {
+      padding: 1rem 0.6rem;
+      font-size: 0.95rem;
+      min-height: 90px;
+    }
+    
+    .menu-btn i {
+      font-size: 1.6rem;
+    }
+    
+    .letter-modal {
+      padding: 2rem 1.5rem;
+    }
+    
+    .letter-modal h1 {
+      font-size: 1.8rem;
+    }
+    
+    .letter-modal p {
+      font-size: 1.2rem;
+    }
+
+    .letter-envelope {
+      width: 200px;
+      height: 133px;
+    }
+
+    .letter-envelope-body {
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-bottom: 66px solid #c9a66b;
+    }
+
+    .letter-envelope-flap {
+      border-left: 100px solid transparent;
+      border-right: 100px solid transparent;
+      border-top: 66px solid #d4b57a;
+    }
+
+    .letter-envelope-front {
+      height: 66px;
+    }
+
+    .letter-wax-seal {
+      width: 50px;
+      height: 50px;
+      font-size: 1.8rem;
+    }
+
+    .letter-instruction {
+      font-size: 1rem;
+      bottom: -35px;
+    }
+
+    .comment-form {
+      padding: 1.2rem;
+    }
+
+    .comments-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .button-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    .menu-title {
+      font-size: 2rem;
+    }
+    
+    .menu-btn {
+      min-height: 80px;
+    }
+    
+    .letter-modal {
+      padding: 1.5rem 1rem;
+    }
+    
+    .letter-modal h1 {
+      font-size: 1.5rem;
+    }
+    
+    .letter-modal p {
+      font-size: 1.1rem;
+      text-indent: 30px;
+    }
+
+    .comment-header {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .comment-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- Back button -->
+<a href="mainpage.html" class="back-button">
+  <i class="fas fa-arrow-left"></i>
+  <span>Back</span>
+</a>
+
+<!-- Big hearts -->
+<div class="hearts" id="hearts-container"></div>
+
+<!-- Small hearts -->
+<div class="small-hearts" id="small-hearts-container"></div>
+
+<!-- Rose petals container -->
+<div id="petals-container"></div>
+
+<!-- Main Menu -->
+<div class="main-menu" id="main-menu">
+  <h1 class="menu-title">My Valentine's Letters</h1>
+  <p class="menu-subtitle">Click a letter to open and read. You can leave your thoughts too! 💖</p>
+  
+  <div class="button-grid">
+    <button class="menu-btn" data-letter="main-letter">
+      <i class="fas fa-heart"></i>
+      <span>Main Love Letter</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="assurance">
+      <i class="fas fa-shield-heart"></i>
+      <span>My Assurance</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="loyalty">
+      <i class="fas fa-heart-circle-check"></i>
+      <span>My Loyalty</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="obsession">
+      <i class="fas fa-heart-crack"></i>
+      <span>My Obsession</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="likes">
+      <i class="fas fa-star"></i>
+      <span>What I Like</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="dislikes">
+      <i class="fas fa-heart-circle-exclamation"></i>
+      <span>What I Don't Like</span>
+    </button>
+    
+    <button class="menu-btn" data-letter="actions">
+      <i class="fas fa-heart-circle-plus"></i>
+      <span>Favorite Actions</span>
+    </button>
+  </div>
+  
+  <div style="color: #ffb8c6; font-size: 0.9rem; margin-top: 1.5rem;">
+    <i class="fas fa-heart"></i> Each letter has a special comment section for "Rose cutiee" <i class="fas fa-heart"></i>
+  </div>
+</div>
+
+<!-- Letter Envelope Animation -->
+<div class="letter-envelope-container" id="letter-envelope-container">
+  <div class="letter-envelope" id="letter-envelope">
+    <div class="letter-envelope-flap"></div>
+    <div class="letter-envelope-body"></div>
+    <div class="letter-envelope-front"></div>
+    <div class="letter-wax-seal" id="letter-wax-seal">🌹</div>
+    <p class="letter-instruction">Click the seal to open this letter</p>
+  </div>
+</div>
+
+<!-- Main Letter Modal -->
+<div class="modal-overlay" id="main-letter-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="main-letter-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h1>A Letter to a pretty, cutiee and beautiful thief</h1>
+    
+    <p>Dear Thief,</p>
+    
+    <p>
+      I just wanted you to know that you can keep what you stole 
+      - "my heart" - and I want you to take good care of it. This man wants you to know that you can even keep it for the
+      rest of your life as this one plans to grow older with you.
+    </p>
+    
+    <p>
+      This man wants you honestly, purely and has the willingness to pursue you.
+      May you find my actions true and real. On this day, the 14th of February 2026, I want you to feel special and I hope
+      this short letter does its part. May you always find beauty in the quiet corners, and may your journey be guided by
+      light, kindness, and curiosity. 
+    </p>
+    
+    <p>Always remember that you are cherished, not just today but every day.</p>
+    
+    <div class="signature">
+      <p>Sincerely yours,</p>
+      <em>Your suitor 🌹</em>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="main-letter-comment">Your comment:</label>
+          <textarea id="main-letter-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="main-letter-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="main-letter-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="main-letter-comments">
+        <!-- Comments will be loaded here -->
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section Modals with Comments -->
+<div class="modal-overlay" id="assurance-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="assurance-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>My Assurance</h2>
+    <p>My dear, I want to assure you that my feelings for you are as genuine as the sunrise. I promise to stand by you through all seasons of life - in sunshine and in rain, in laughter and in tears.</p>
+    <p>I assure you that I will always be honest with you, even when the truth is difficult. My commitment to you is not just for today, but for all the tomorrows we will share together.</p>
+    <p>You have my word that I will respect your boundaries, honor your dreams, and support your journey. My assurance to you is written not just in words, but in every action I take.</p>
+    <p>I promise to always communicate openly, to listen with empathy, and to cherish you for exactly who you are. You are safe with me, always.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="assurance-comment">Your comment:</label>
+          <textarea id="assurance-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="assurance-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="assurance-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="assurance-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loyalty-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="loyalty-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>My Loyalty</h2>
+    <p>My loyalty to you is unwavering and absolute. It is not a temporary feeling but a permanent commitment that I choose to renew every single day.</p>
+    <p>I will be loyal in my thoughts, always seeing the best in you. I will be loyal in my words, speaking of you with respect and admiration. I will be loyal in my actions, proving through deeds that you can trust me completely.</p>
+    <p>My loyalty means that I will defend your honor when you're not around, celebrate your successes as if they were my own, and stand beside you when challenges arise.</p>
+    <p>You have my complete and undivided loyalty - not because you demand it, but because you deserve it. It is given freely, joyfully, and completely.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="loyalty-comment">Your comment:</label>
+          <textarea id="loyalty-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="loyalty-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="loyalty-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="loyalty-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="obsession-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="obsession-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>My Healthy Obsession</h2>
+    <p>I must confess - I am wonderfully, beautifully obsessed with you. But this is not a possessive obsession; it's an admiring one that celebrates your freedom and individuality.</p>
+    <p>I'm obsessed with the way your eyes light up when you talk about something you love. I'm captivated by the unique melody of your laughter. I'm fascinated by the way your mind works, solving problems and seeing beauty where others see none.</p>
+    <p>I find myself thinking about the little things: how you tilt your head when you're curious, the way you bite your lip when concentrating, the specific way you say certain words.</p>
+    <p>This healthy obsession means I notice everything about you and cherish it all. It means I'm constantly discovering new reasons to admire you, and I'm grateful for every single one.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="obsession-comment">Your comment:</label>
+          <textarea id="obsession-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="obsession-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="obsession-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="obsession-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="likes-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="likes-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>What I Like About You</h2>
+    <p>Where do I even begin? I like absolutely everything about you, but let me try to name just a few:</p>
+    <p>• Your kindness that seems to know no bounds<br>
+       • Your intelligence that both challenges and inspires me<br>
+       • Your smile that could light up the darkest room<br>
+       • Your resilience in facing life's challenges<br>
+       • Your sense of humor that always finds the perfect timing<br>
+       • Your passion for the things you care about<br>
+       • Your empathy that makes everyone feel understood<br>
+       • Your curiosity about the world around you</p>
+    <p>I like the way you make me want to be a better person. I like how comfortable I feel being myself around you. I like that with you, I've found a home.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="likes-comment">Your comment:</label>
+          <textarea id="likes-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="likes-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="likes-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="likes-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dislikes-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="dislikes-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>What I Don't Like (But I'll Love Anyway)</h2>
+    <p>The truth is, there's nothing about you that I don't love. Even the things you might consider flaws are perfect to me because they make you uniquely you.</p>
+    <p>• When you're stubborn, I admire your conviction<br>
+       • When you're uncertain, I love the opportunity to support you<br>
+       • When you're messy, I see creativity in motion<br>
+       • When you're quiet, I appreciate the peace you bring<br>
+       • When you're worried, I'm grateful to be your safe space</p>
+    <p>I don't like it when you're hard on yourself, but I love being there to remind you of your worth. I don't like it when you're sad, but I love being the one who tries to make you smile again.</p>
+    <p>Every part of you - even the parts you might wish were different - is a part of the whole person I've fallen for. And I love that whole person completely.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="dislikes-comment">Your comment:</label>
+          <textarea id="dislikes-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="dislikes-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="dislikes-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="dislikes-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="actions-modal">
+  <div class="letter-modal">
+    <button class="close-modal" data-modal="actions-modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>My Favorite Actions You Did</h2>
+    <p>Certain moments with you are etched in my memory forever. These are some of my favorite actions you've done:</p>
+    <p>• That first time you really smiled at me - not just a polite smile, but a genuine, reaching-your-eyes smile<br>
+       • The way you remembered small details about things I'd mentioned in passing<br>
+       • When you showed vulnerability and trusted me with your feelings<br>
+       • How you check on me when you sense something's wrong<br>
+       • The thoughtful little gestures that show you care</p>
+    <p>I love when you share your passions with me, explaining things with such enthusiasm. I love when you reach for my hand without thinking about it. I love when you do that thing where you get so excited about something that you talk a mile a minute.</p>
+    <p>Every action, every gesture, every moment with you becomes my new favorite. Because with you, even ordinary moments feel extraordinary.</p>
+    
+    <div class="comments-section">
+      <h3 class="comments-title">
+        <i class="fas fa-comments"></i>
+        Thoughts from Rose cutiee 💭
+      </h3>
+      
+      <div class="comment-form">
+        <div class="form-header">
+          <i class="fas fa-user-circle" style="color:#ff5a7a; font-size:1.2rem;"></i>
+          <span class="commenter-name">Rose cutiee</span>
+          <span class="author-badge">You</span>
+        </div>
+        
+        <div class="form-group">
+          <label for="actions-comment">Your comment:</label>
+          <textarea id="actions-comment" placeholder="Share your thoughts about this letter..." maxlength="500"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn-cancel" id="actions-cancel" style="display:none;">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button class="btn-submit" id="actions-submit">
+            <i class="fas fa-paper-plane"></i>
+            Post Comment
+          </button>
+        </div>
+      </div>
+      
+      <div class="comments-list" id="actions-comments">
+        <div class="no-comments">No comments yet. Be the first to share your thoughts!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const heartsContainer = document.getElementById("hearts-container");
+const smallHeartsContainer = document.getElementById("small-hearts-container");
+const petalsContainer = document.getElementById("petals-container");
+const mainMenu = document.getElementById("main-menu");
+const letterEnvelopeContainer = document.getElementById("letter-envelope-container");
+const letterEnvelope = document.getElementById("letter-envelope");
+const letterWaxSeal = document.getElementById("letter-wax-seal");
+
+// Store current letter being opened
+let currentLetter = null;
+
+// ------------------------
+// Create big clickable hearts
+// ------------------------
+function createHearts() {
+  const heartCount = window.innerWidth < 768 ? 10 : 15;
+  
+  for(let i = 0; i < heartCount; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.top = Math.random() * window.innerHeight + 'px';
+    heart.style.animationDelay = Math.random() * 5 + 's';
+    
+    const size = 25 + Math.random() * 15;
+    heart.style.width = size + 'px';
+    heart.style.height = size + 'px';
+    
+    heartsContainer.appendChild(heart);
+
+    heart.addEventListener('click', (e) => {
+      popHeart(e.clientX, e.clientY);
+      heart.style.animation = 'none';
+      heart.style.opacity = '0.5';
+      setTimeout(() => {
+        heart.remove();
+        setTimeout(createSingleHeart, 500);
+      }, 300);
+    });
+  }
+}
+
+function createSingleHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.style.left = Math.random() * window.innerWidth + 'px';
+  heart.style.top = Math.random() * window.innerHeight + 'px';
+  heart.style.animationDelay = Math.random() * 5 + 's';
+  
+  const size = 25 + Math.random() * 15;
+  heart.style.width = size + 'px';
+  heart.style.height = size + 'px';
+  
+  heartsContainer.appendChild(heart);
+
+  heart.addEventListener('click', (e) => {
+    popHeart(e.clientX, e.clientY);
+    heart.style.animation = 'none';
+    heart.style.opacity = '0.5';
+    setTimeout(() => {
+      heart.remove();
+      setTimeout(createSingleHeart, 500);
+    }, 300);
+  });
+}
+
+// ------------------------
+// Create many small floating hearts
+// ------------------------
+function createSmallHearts() {
+  const smallHeartCount = window.innerWidth < 768 ? 30 : 40;
+  
+  for(let i = 0; i < smallHeartCount; i++) {
+    const sh = document.createElement('div');
+    sh.className = 'small-heart';
+    sh.style.left = Math.random() * window.innerWidth + 'px';
+    sh.style.top = Math.random() * window.innerHeight + 'px';
+    sh.style.width = 5 + Math.random() * 8 + 'px';
+    sh.style.height = 5 + Math.random() * 8 + 'px';
+    sh.style.animationDelay = Math.random() * 8 + 's';
+    sh.style.opacity = 0.5 + Math.random() * 0.5;
+    
+    smallHeartsContainer.appendChild(sh);
+  }
+}
+
+// ------------------------
+// Create falling rose petals
+// ------------------------
+function createPetals() {
+  const petalCount = window.innerWidth < 768 ? 10 : 15;
+  
+  for(let i = 0; i < petalCount; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    
+    const size = 6 + Math.random() * 8;
+    petal.style.width = size + 'px';
+    petal.style.height = size * 1.3 + 'px';
+    petal.style.left = Math.random() * window.innerWidth + 'px';
+    
+    const duration = 8 + Math.random() * 12;
+    const delay = Math.random() * 15;
+    petal.style.animationDuration = duration + 's';
+    petal.style.animationDelay = delay + 's';
+    
+    const hue = 330 + Math.random() * 20;
+    petal.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 70%) 30%, hsl(${hue}, 100%, 85%) 100%)`;
+    
+    petalsContainer.appendChild(petal);
+    
+    setTimeout(() => {
+      petal.remove();
+      setTimeout(createSinglePetal, 100);
+    }, (duration + delay) * 1000);
+  }
+}
+
+function createSinglePetal() {
+  const petal = document.createElement('div');
+  petal.className = 'petal';
+  
+  const size = 6 + Math.random() * 8;
+  petal.style.width = size + 'px';
+  petal.style.height = size * 1.3 + 'px';
+  petal.style.left = Math.random() * window.innerWidth + 'px';
+  
+  const duration = 8 + Math.random() * 12;
+  petal.style.animationDuration = duration + 's';
+  
+  const hue = 330 + Math.random() * 20;
+  petal.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 70%) 30%, hsl(${hue}, 100%, 85%) 100%)`;
+  
+  petalsContainer.appendChild(petal);
+  
+  setTimeout(() => {
+    petal.remove();
+    setTimeout(createSinglePetal, 100);
+  }, duration * 1000);
+}
+
+// ------------------------
+// Pop heart function
+// ------------------------
+function popHeart(x, y) {
+  const particlesCount = 12;
+  const colors = ['#ff5a7a', '#ff3a6a', '#ffb8c6', '#ff8da1'];
+  
+  for(let i = 0; i < particlesCount; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+    
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    
+    const size = 3 + Math.random() * 4;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    
+    heartsContainer.appendChild(p);
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 40 + Math.random() * 80;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance;
+    
+    p.animate([
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0)`, opacity: 0 }
+    ], {
+      duration: 500 + Math.random() * 500,
+      easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
+      fill: 'forwards'
+    });
+
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+// ------------------------
+// Envelope Animation for Letters
+// ------------------------
+function openLetterEnvelope(letterId) {
+  currentLetter = letterId;
+  letterEnvelopeContainer.classList.add('active');
+  
+  // Reset envelope state
+  letterEnvelope.classList.remove('open');
+}
+
+function closeLetterEnvelope() {
+  letterEnvelopeContainer.classList.remove('active');
+}
+
+// Open envelope and then letter
+function openEnvelopeAndLetter(letterId) {
+  openLetterEnvelope(letterId);
+  
+  // When envelope is clicked, open it and then show letter
+  const openLetter = () => {
+    letterEnvelope.classList.add('open');
+    
+    // After flap opens, show the letter modal
+    setTimeout(() => {
+      closeLetterEnvelope();
+      setTimeout(() => {
+        openModal(letterId + '-modal');
+      }, 300);
+    }, 1000);
+  };
+  
+  // Set up one-time click handler
+  const clickHandler = () => {
+    openLetter();
+    // Remove the event listener after it's been used
+    letterWaxSeal.removeEventListener('click', clickHandler);
+    letterEnvelope.removeEventListener('click', clickHandler);
+  };
+  
+  letterWaxSeal.addEventListener('click', clickHandler);
+  letterEnvelope.addEventListener('click', clickHandler);
+}
+
+// ------------------------
+// Comments System with Editing
+// ------------------------
+const COMMENT_AUTHOR = "Rose cutiee";
+
+// Load comments for a specific lette
+function loadComments(letterId) {
+  const commentsList = document.getElementById(`${letterId}-comments`);
+  const comments = JSON.parse(localStorage.getItem(`comments_${letterId}`)) || [];
+  
+  commentsList.innerHTML = '';
+  
+  if (comments.length === 0) {
+    const noComments = document.createElement('div');
+    noComments.className = 'no-comments';
+    noComments.textContent = 'No comments yet. Be the first to share your thoughts!';
+    commentsList.appendChild(noComments);
+  } else {
+    // Display comments in reverse order (newest first)
+    comments.slice().reverse().forEach(comment => {
+      const commentElement = createCommentElement(comment, letterId);
+      commentsList.appendChild(commentElement);
+    });
+  }
+}
+
+// Create comment element with edit/delete buttons
+function createCommentElement(comment, letterId) {
+  const commentDiv = document.createElement('div');
+  commentDiv.className = 'comment-item';
+  commentDiv.dataset.id = comment.id;
+  
+  const date = new Date(comment.timestamp);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  commentDiv.innerHTML = `
+    <div class="comment-header">
+      <div class="comment-author">
+        <i class="fas fa-user-circle" style="color:#ff5a7a;"></i>
+        <div>
+          <div class="author-name">${comment.author}</div>
+          ${comment.author === COMMENT_AUTHOR ? '<span class="author-badge">You</span>' : ''}
+        </div>
+      </div>
+      <div class="comment-date">${formattedDate}</div>
+    </div>
+    <div class="comment-content">${comment.content}</div>
+    ${comment.author === COMMENT_AUTHOR ? `
+    <div class="comment-actions">
+      <button class="btn-edit" data-id="${comment.id}" data-letter="${letterId}">
+        <i class="fas fa-edit"></i> Edit
+      </button>
+      <button class="btn-delete" data-id="${comment.id}" data-letter="${letterId}">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+    ` : ''}
+  `;
+  
+  return commentDiv;
+}
+
+// Save or update comment
+function saveComment(letterId, content, commentId = null) {
+  const comments = JSON.parse(localStorage.getItem(`comments_${letterId}`)) || [];
+  
+  if (commentId) {
+    // Update existing comment
+    const index = comments.findIndex(c => c.id === commentId);
+    if (index !== -1) {
+      comments[index].content = content;
+      comments[index].timestamp = new Date().toISOString();
+    }
+  } else {
+    // Add new comment
+    const newComment = {
+      id: Date.now().toString(),
+      author: COMMENT_AUTHOR,
+      content: content,
+      timestamp: new Date().toISOString()
+    };
+    
+    comments.push(newComment);
+  }
+  
+  localStorage.setItem(`comments_${letterId}`, JSON.stringify(comments));
+  
+  // Reload comments
+  loadComments(letterId);
+  
+  // Clear form
+  document.getElementById(`${letterId}-comment`).value = '';
+  
+  // Reset form state
+  resetForm(letterId);
+}
+
+// Delete comment
+function deleteComment(letterId, commentId) {
+  if (!confirm('Are you sure you want to delete this comment?')) {
+    return;
+  }
+  
+  const comments = JSON.parse(localStorage.getItem(`comments_${letterId}`)) || [];
+  const filteredComments = comments.filter(c => c.id !== commentId);
+  
+  localStorage.setItem(`comments_${letterId}`, JSON.stringify(filteredComments));
+  
+  // Reload comments
+  loadComments(letterId);
+}
+
+// Edit comment - load into form
+function editComment(letterId, commentId) {
+  const comments = JSON.parse(localStorage.getItem(`comments_${letterId}`)) || [];
+  const comment = comments.find(c => c.id === commentId);
+  
+  if (!comment) return;
+  
+  // Set form values
+  const textarea = document.getElementById(`${letterId}-comment`);
+  const submitBtn = document.getElementById(`${letterId}-submit`);
+  const cancelBtn = document.getElementById(`${letterId}-cancel`);
+  
+  textarea.value = comment.content;
+  submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Comment';
+  submitBtn.dataset.editId = commentId;
+  cancelBtn.style.display = 'flex';
+  
+  // Focus on textarea
+  textarea.focus();
+}
+
+// Reset form to normal state
+function resetForm(letterId) {
+  const textarea = document.getElementById(`${letterId}-comment`);
+  const submitBtn = document.getElementById(`${letterId}-submit`);
+  const cancelBtn = document.getElementById(`${letterId}-cancel`);
+  
+  textarea.value = '';
+  submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Comment';
+  delete submitBtn.dataset.editId;
+  cancelBtn.style.display = 'none';
+}
+
+// ------------------------
+// Open Modals from Menu with Envelope Animation
+// ------------------------
+document.querySelectorAll('.menu-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const letterId = btn.getAttribute('data-letter');
+    openEnvelopeAndLetter(letterId);
+  });
+});
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    modal.classList.add('active');
+    
+    // Load comments for this letter
+    const letterId = modalId.replace('-modal', '');
+    loadComments(letterId);
+  }
+}
+
+// Close modals
+document.querySelectorAll('.close-modal').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const modalId = btn.getAttribute('data-modal');
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('active');
+    
+    // Reset any open forms
+    const letterId = modalId.replace('-modal', '');
+    resetForm(letterId);
+  });
+});
+
+// Close modals when clicking outside
+document.querySelectorAll('.modal-overlay').forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      
+      // Reset any open forms
+      const modalId = modal.id;
+      const letterId = modalId.replace('-modal', '');
+      resetForm(letterId);
+    }
+  });
+});
+
+// Handle comment submissions and updates
+document.querySelectorAll('.btn-submit').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const letterId = btn.id.replace('-submit', '');
+    const textarea = document.getElementById(`${letterId}-comment`);
+    const content = textarea.value.trim();
+    
+    if (!content) {
+      alert('Please enter a comment');
+      return;
+    }
+    
+    if (content.length > 500) {
+      alert('Comment must be 500 characters or less');
+      return;
+    }
+    
+    const commentId = btn.dataset.editId;
+    saveComment(letterId, content, commentId);
+    
+    // Show success message
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Success!';
+    btn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+    
+    setTimeout(() => {
+      btn.innerHTML = originalText;
+      btn.style.background = '';
+    }, 2000);
+  });
+});
+
+// Handle cancel edit
+document.querySelectorAll('.btn-cancel').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const letterId = btn.id.replace('-cancel', '');
+    resetForm(letterId);
+  });
+});
+
+// Handle edit and delete clicks (event delegation for dynamically loaded comments)
+document.addEventListener('click', (e) => {
+  // Edit button
+  if (e.target.classList.contains('btn-edit') || e.target.closest('.btn-edit')) {
+    const btn = e.target.classList.contains('btn-edit') ? e.target : e.target.closest('.btn-edit');
+    const letterId = btn.dataset.letter;
+    const commentId = btn.dataset.id;
+    editComment(letterId, commentId);
+  }
+  
+  // Delete button
+  if (e.target.classList.contains('btn-delete') || e.target.closest('.btn-delete')) {
+    const btn = e.target.classList.contains('btn-delete') ? e.target : e.target.closest('.btn-delete');
+    const letterId = btn.dataset.letter;
+    const commentId = btn.dataset.id;
+    deleteComment(letterId, commentId);
+  }
+});
+
+// Also allow submitting comments with Ctrl+Enter in textarea
+document.querySelectorAll('textarea').forEach(textarea => {
+  textarea.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      const letterId = textarea.id.replace('-comment', '');
+      const submitBtn = document.getElementById(`${letterId}-submit`);
+      submitBtn.click();
+    }
+  });
+});
+
+// ------------------------
+// Initialize everything
+// ------------------------
+function init() {
+  createHearts();
+  createSmallHearts();
+  createPetals();
+  
+  // Adjust for window resize
+  window.addEventListener('resize', () => {
+    heartsContainer.innerHTML = '';
+    smallHeartsContainer.innerHTML = '';
+    petalsContainer.innerHTML = '';
+    
+    createHearts();
+    createSmallHearts();
+    createPetals();
+  });
+}
+
+// Start when page loads
+document.addEventListener('DOMContentLoaded', init);
+
+// Add keyboard controls
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // Close any open modals
+    document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+      modal.classList.remove('active');
+    });
+    
+    // Close envelope if open
+    closeLetterEnvelope();
+  }
+});
+</script>
+
+</body>
+</html>

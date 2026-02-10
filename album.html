@@ -657,52 +657,6 @@ body {
   border-top: 1px solid #fce4ec;
 }
 
-/* Edit form */
-.edit-form {
-  display: grid;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #fff5f7;
-  border-radius: 8px;
-  border: 1px solid #fce4ec;
-}
-
-.form-group {
-  display: grid;
-  gap: 0.25rem;
-}
-
-.form-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #ad1457;
-}
-
-.form-input,
-.form-textarea,
-.form-select {
-  padding: 0.5rem;
-  border: 1px solid #ffcdd2;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  font-family: inherit;
-  background: white;
-}
-
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
-}
-
-.form-textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
 /* Empty states */
 .empty-state {
   text-align: center;
@@ -926,54 +880,10 @@ body {
       </div>
       
       <div class="modal-actions">
-        <button id="editBtn" class="btn btn-primary btn-sm">
-          <i class="fas fa-edit"></i>
-          <span>Edit</span>
-        </button>
         <button id="toggleFavoriteModal" class="btn btn-outline btn-sm">
           <i class="far fa-heart"></i>
           <span>Favorite</span>
         </button>
-      </div>
-      
-      <div id="editForm" class="edit-form hidden">
-        <div class="form-group">
-          <label class="form-label" for="modalTitle">Title</label>
-          <input type="text" id="modalTitle" class="form-input">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="modalDesc">Description</label>
-          <textarea id="modalDesc" class="form-textarea"></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="modalDate">Date</label>
-          <input type="date" id="modalDate" class="form-input">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="modalCategory">Category</label>
-          <select id="modalCategory" class="form-select">
-            <option value="Album">Album</option>
-            <option value="HER">HER</option>
-            <option value="Together">Together</option>
-            <option value="Journey">Journey</option>
-            <option value="Food">Your Food</option>
-            <option value="">No Category</option>
-          </select>
-        </div>
-        
-        <div class="modal-actions">
-          <button id="saveChanges" class="btn btn-primary btn-sm">
-            <i class="fas fa-save"></i>
-            <span>Save</span>
-          </button>
-          <button id="cancelEdit" class="btn btn-outline btn-sm">
-            <i class="fas fa-times"></i>
-            <span>Cancel</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -986,115 +896,77 @@ body {
 </div>
 
 <script>
-// Image data storage using localStorage for persistence
-const STORAGE_KEY = 'photoAlbumData';
-
-// Load album data from localStorage
-function loadAlbumFromStorage() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    return JSON.parse(saved);
-  }
-  return null;
-}
-
-// Save album data to localStorage
-function saveAlbumToStorage(album) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(album));
-}
-
-// Initialize with sample data if no saved data
-function initializeSampleData() {
-  const saved = loadAlbumFromStorage();
-  if (saved) {
-    return saved;
-  }
-  
-  // Default sample data
-  const sampleImages = [
-    {id:2, src:'images/Her/herwhiteabay.jpg', title:'White Cute and Elegant', desc:'- your are cute and I like your hair on this picture', date:'2025-12-20', category:'HER', fav:true},
-    {id:6, src:'images/Her/hercutie.jpg', title:'Pretty Smile', desc:'- your smile brightens my mood and I like your hair', date:'2025-12-02', category:'HER', fav:false},
-    {id:9, src:'images/Her/blackcap.jpeg', title:'On a flower', desc:'- your beauty is like the flowers, vibrant and dazzling.', date:'2025-12-02', category:'HER', fav:false},
-    {id:10, src:'images/Her/blackcapformalher.jpg', title:'Brighter Smile', desc:'- cool and cutiee smile', date:'2026-01-02', category:'HER', fav:false},
-    {id:11, src:'images/Her/coolgirlhottie.jpg', title:'Cool girl', desc:'- you look hot on this, damn', date:'2026-01-02', category:'HER', fav:false},
-    {id:12, src:'images/Her/formalher.jpg', title:'Cool girl', desc:'- you look hot on this too and I like your outfit', date:'2026-01-02', category:'HER', fav:false},
-    {id:13, src:'images/Her/heartbeachday.jpg', title:'Cloudy', desc:'- it makes me admire how free you are on this image and wants you to experience it again', date:'2025-12-02', category:'HER', fav:false},
-    {id:14, src:'images/Her/heartbeachsunset.jpg', title:'Sunset cutiee', desc:'- you look nice and warm on this', date:'2025-12-18', category:'HER', fav:false},
-    {id:15, src:'images/Her/herbeachpast.jpg', title:'Pretty and cute', desc:'- cutiee cuteeeee', date:'2025-12-02', category:'HER', fav:false},
-    {id:16, src:'images/Her/herbeachpast2.jpg', title:'Pretty Rose', desc:'- I like youuuuuuuuuu...r hair hehe', date:'2025-12-02', category:'HER', fav:false},
-    {id:17, src:'images/Her/herblack.jpg', title:'Black girl pretty', desc:'- I like youuuuuuuuuu...r outfit, croptop is good om you and your hair hehe pretty', date:'2026-01-07', category:'HER', fav:false},
-    {id:18, src:'images/Her/heronbeach.jpg', title:'Sunset cutiee', desc:'- I like it when you feel free', date:'2025-12-21', category:'HER', fav:false},
-    {id:19, src:'images/Her/heronblackmoa.jpg', title:'Black cutiee', desc:'- kinilig lang ako dito nung nag update ka mweheheh', date:'2025-12-22', category:'HER', fav:false},
-    {id:20, src:'images/Her/heronmoawhite.jpg', title:'Pretty Rose', desc:'- pretty update nakakakilig, you look fine and pretty', date:'2025-12-22', category:'HER', fav:false},
-    {id:21, src:'images/Her/heronuniform.jpg', title:'So beautiful', desc:'- Pretty eyes and everythings hehhe, Your hair is pretty', date:'2025-12-02', category:'HER', fav:false},
-    {id:22, src:'images/Her/redcapher.jpg', title:'Party cool girl', desc:'- ang cool mo lang tingnan dito', date:'2025-12-02', category:'HER', fav:false},
-    {id:23, src:'images/Her/whitepretty.jpg', title:'My favorite', desc:'- You are sooooooooooooo pretty', date:'2025-12-22', category:'HER', fav:true},
-    {id:24, src:'images/Food/one.jpg', title:'Sweaty', desc:'will you do the cleaning of my sweats babe?', date:'2025-12-22', category:'Food', fav:false},
-    {id:25, src:'images/Food/two.jpg', title:'Do you like gray?', desc:'Just focus on... hmm nevermind, its all yours babe', date:'2025-12-22', category:'Food', fav:false},
-    {id:26, src:'images/Food/three.jpg', title:'Yummy?', desc:'I hope you are here to wipe all those sweats babe~~~', date:'2025-12-22', category:'Food', fav:false},
-    {id:27, src:'images/Food/four.jpg', title:'Just Flexing', desc:'I love you always babe', date:'2025-12-22', category:'Food', fav:false},
-    {id:28, src:'images/Food/five.jpg', title:'Somethings missing', desc:'Training my back for you', date:'2025-12-22', category:'Food', fav:false},
-    {id:29, src:'images/Food/six.jpg', title:'Random', desc:'Just a random flexing', date:'2025-12-22', category:'Food', fav:false},
-    {id:30, src:'images/Food/seven.jpg', title:'Mind if?', desc:'Dont just stare at it, visit me whenever you are free babe, I missed you', date:'2025-12-22', category:'Food', fav:false},
-    {id:31, src:'images/together/a.jpg', title:'Just Us', desc:'This moment feels like home with you', date:'2025-12-22', category:'Together', fav:false},
-    {id:32, src:'images/together/b.jpg', title:'First', desc:'The very first picture of us together, missed it', date:'2025-12-22', category:'Together', fav:false},
-    {id:33, src:'images/together/c.jpg', title:'Just candid', desc:'I wish we could spend more time together and buy street foods', date:'2025-12-22', category:'Together', fav:false},  
-    {id:34, src:'images/together/d.jpg', title:'Your are so pretty', desc:'Lets travel soon babe and I will be your personal photographer', date:'2025-12-22', category:'Together', fav:false},
-    {id:35, src:'images/together/e.jpg', title:'First Grocery something', desc:'I love the way you grab my arn this day and you blushed remember? I also love helping you, miss this mwapsss', date:'2025-12-22', category:'Together', fav:false},
-    {id:37, src:'images/together/f.jpg', title:'Cute', desc:'cute natin noh', date:'2025-12-22', category:'Together', fav:false},
-    {id:38, src:'images/together/g.jpg', title:'Shy both', desc:'were shy here kaya di nagkadikit, but I leaned a little bit.', date:'2025-12-22', category:'Together', fav:false},
-    {id:39, src:'images/together/h.jpg', title:'Nice', desc:'Ayan magkadikit na but still shy heheh, luv you!', date:'2025-12-22', category:'Together', fav:false},
-    {id:40, src:'images/together/i.jpg', title:'Hayssss', desc:'Nahihiya and baby damulag na yan', date:'2025-12-22', category:'Together', fav:false},
-    {id:41, src:'images/together/j.jpg', title:'Four', desc:'Ayan group pic naman hahahahah', date:'2025-12-22', category:'Together', fav:false},
-    {id:42, src:'images/together/aa.jpg', title:'Cuteness', desc:'Ang cute nyo dito noh hehe,Imagine in the future tapos we have a baby then its like that...', date:'2025-12-22', category:'Together', fav:false},
-    {id:43, src:'images/together/bb.jpg', title:'My Sunset', desc:'I will always miss you whenever there is susnset, you will always be a reminder for me...', date:'2025-12-22', category:'Together', fav:true},
-  ];
-  
-  saveAlbumToStorage(sampleImages);
-  return sampleImages;
-}
+// Static image data - manually created
+const albumData = [
+  {id: 2, src: 'images/Her/herwhiteabay.jpg', title: 'White Cute and Elegant', desc: '- your are cute and I like your hair on this picture', date: '2025-12-20', category: 'HER', fav: true},
+  {id: 6, src: 'images/Her/hercutie.jpg', title: 'Pretty Smile', desc: '- your smile brightens my mood and I like your hair', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 9, src: 'images/Her/blackcap.jpeg', title: 'On a flower', desc: '- your beauty is like the flowers, vibrant and dazzling.', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 10, src: 'images/Her/blackcapformalher.jpg', title: 'Brighter Smile', desc: '- cool and cutiee smile', date: '2026-01-02', category: 'HER', fav: false},
+  {id: 11, src: 'images/Her/coolgirlhottie.jpg', title: 'Cool girl', desc: '- you look hot on this, damn', date: '2026-01-02', category: 'HER', fav: false},
+  {id: 12, src: 'images/Her/formalher.jpg', title: 'Cool girl', desc: '- you look hot on this too and I like your outfit', date: '2026-01-02', category: 'HER', fav: false},
+  {id: 13, src: 'images/Her/heartbeachday.jpg', title: 'Cloudy', desc: '- it makes me admire how free you are on this image and wants you to experience it again', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 14, src: 'images/Her/heartbeachsunset.jpg', title: 'Sunset cutiee', desc: '- you look nice and warm on this', date: '2025-12-18', category: 'HER', fav: false},
+  {id: 15, src: 'images/Her/herbeachpast.jpg', title: 'Pretty and cute', desc: '- cutiee cuteeeee', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 16, src: 'images/Her/herbeachpast2.jpg', title: 'Pretty Rose', desc: '- I like youuuuuuuuuu...r hair hehe', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 17, src: 'images/Her/herblack.jpg', title: 'Black girl pretty', desc: '- I like youuuuuuuuuu...r outfit, croptop is good om you and your hair hehe pretty', date: '2026-01-07', category: 'HER', fav: false},
+  {id: 18, src: 'images/Her/heronbeach.jpg', title: 'Sunset cutiee', desc: '- I like it when you feel free', date: '2025-12-21', category: 'HER', fav: false},
+  {id: 19, src: 'images/Her/heronblackmoa.jpg', title: 'Black cutiee', desc: '- kinilig lang ako dito nung nag update ka mweheheh', date: '2025-12-22', category: 'HER', fav: false},
+  {id: 20, src: 'images/Her/heronmoawhite.jpg', title: 'Pretty Rose', desc: '- pretty update nakakakilig, you look fine and pretty', date: '2025-12-22', category: 'HER', fav: false},
+  {id: 21, src: 'images/Her/heronuniform.jpg', title: 'So beautiful', desc: '- Pretty eyes and everythings hehhe, Your hair is pretty', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 22, src: 'images/Her/redcapher.jpg', title: 'Party cool girl', desc: '- ang cool mo lang tingnan dito', date: '2025-12-02', category: 'HER', fav: false},
+  {id: 23, src: 'images/Her/whitepretty.jpg', title: 'My favorite', desc: '- You are sooooooooooooo pretty', date: '2025-12-22', category: 'HER', fav: true},
+  {id: 24, src: 'images/Food/one.jpg', title: 'Sweaty', desc: 'will you do the cleaning of my sweats babe?', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 25, src: 'images/Food/two.jpg', title: 'Do you like gray?', desc: 'Just focus on... hmm nevermind, its all yours babe', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 26, src: 'images/Food/three.jpg', title: 'Yummy?', desc: 'I hope you are here to wipe all those sweats babe~~~', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 27, src: 'images/Food/four.jpg', title: 'Just Flexing', desc: 'I love you always babe', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 28, src: 'images/Food/five.jpg', title: 'Somethings missing', desc: 'Training my back for you', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 29, src: 'images/Food/six.jpg', title: 'Random', desc: 'Just a random flexing', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 30, src: 'images/Food/seven.jpg', title: 'Mind if?', desc: 'Dont just stare at it, visit me whenever you are free babe, I missed you', date: '2025-12-22', category: 'Food', fav: false},
+  {id: 31, src: 'images/together/a.jpg', title: 'Just Us', desc: 'This moment feels like home with you', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 32, src: 'images/together/b.jpg', title: 'First', desc: 'The very first picture of us together, missed it', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 33, src: 'images/together/c.jpg', title: 'Just candid', desc: 'I wish we could spend more time together and buy street foods', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 34, src: 'images/together/d.jpg', title: 'Your are so pretty', desc: 'Lets travel soon babe and I will be your personal photographer', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 35, src: 'images/together/e.jpg', title: 'First Grocery something', desc: 'I love the way you grab my arm this day and you blushed remember? I also love helping you, miss this mwapsss', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 37, src: 'images/together/f.jpg', title: 'Cute', desc: 'cute natin noh', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 38, src: 'images/together/g.jpg', title: 'Shy both', desc: 'were shy here kaya di nagkadikit, but I leaned a little bit.', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 39, src: 'images/together/h.jpg', title: 'Nice', desc: 'Ayan magkadikit na but still shy heheh, luv you!', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 40, src: 'images/together/i.jpg', title: 'Hayssss', desc: 'Nahihiya and baby damulag na yan', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 41, src: 'images/together/j.jpg', title: 'Four', desc: 'Ayan group pic naman hahahahah', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 42, src: 'images/together/aa.jpg', title: 'Cuteness', desc: 'Ang cute nyo dito noh hehe,Imagine in the future tapos we have a baby then its like that...', date: '2025-12-22', category: 'Together', fav: false},
+  {id: 43, src: 'images/together/bb.jpg', title: 'My Sunset', desc: 'I will always miss you whenever there is sunset, you will always be a reminder for me...', date: '2025-12-22', category: 'Together', fav: true}
+];
 
 // Create floating Valentine elements
 function createValentineBackground() {
   const container = document.getElementById('valentineBg');
-  const types = ['heart', 'petal', 'petal', 'heart']; // Mix of hearts and petals
+  const types = ['heart', 'petal', 'petal', 'heart'];
   
   for (let i = 0; i < 25; i++) {
     const type = types[Math.floor(Math.random() * types.length)];
     const element = document.createElement('div');
     element.className = type;
     
-    // Random position
     const left = Math.random() * 100;
     const top = Math.random() * 100;
-    
-    // Random size
     const size = 10 + Math.random() * 15;
+    
     element.style.width = `${size}px`;
     element.style.height = type === 'heart' ? `${size}px` : `${size * 1.5}px`;
-    
-    // Random position
     element.style.left = `${left}vw`;
     element.style.top = `${top}vh`;
-    
-    // Random animation delay
-    const delay = Math.random() * 15;
-    element.style.animationDelay = `${delay}s`;
-    
-    // Random opacity
-    const opacity = 0.2 + Math.random() * 0.4;
-    element.style.opacity = opacity;
+    element.style.animationDelay = `${Math.random() * 15}s`;
+    element.style.opacity = 0.2 + Math.random() * 0.4;
     
     container.appendChild(element);
   }
 }
 
 // Initialize
-let album = [];
 let currentItemId = null;
 let currentCategory = null;
 let searchActive = false;
 let currentSort = 'date-desc';
+let favorites = JSON.parse(localStorage.getItem('photoAlbumFavorites')) || {};
 
 // DOM Elements
 const folderView = document.getElementById('folderView');
@@ -1125,15 +997,7 @@ const modalDescDisplay = document.getElementById('modalDescDisplay');
 const modalDateDisplay = document.getElementById('modalDateDisplay');
 const modalCategoryDisplay = document.getElementById('modalCategoryDisplay');
 const modalFavoriteDisplay = document.getElementById('modalFavoriteDisplay');
-const editBtn = document.getElementById('editBtn');
 const toggleFavoriteModal = document.getElementById('toggleFavoriteModal');
-const editForm = document.getElementById('editForm');
-const modalTitle = document.getElementById('modalTitle');
-const modalDesc = document.getElementById('modalDesc');
-const modalDate = document.getElementById('modalDate');
-const modalCategory = document.getElementById('modalCategory');
-const saveChanges = document.getElementById('saveChanges');
-const cancelEdit = document.getElementById('cancelEdit');
 const modalClose = document.getElementById('modalClose');
 
 // Toast elements
@@ -1157,17 +1021,12 @@ function showToast(message, type = 'info') {
     info: 'toast-info'
   };
   
-  // Remove existing type classes
   toast.classList.remove('toast-success', 'toast-error', 'toast-warning', 'toast-info');
-  
   toastIcon.className = `toast-icon ${icons[type] || icons.info}`;
   toastMessage.textContent = message;
   toast.classList.add(typeClasses[type] || 'toast-info');
-  
-  // Show toast
   toast.classList.add('show');
   
-  // Auto-hide after 3 seconds
   setTimeout(() => {
     toast.classList.remove('show');
   }, 3000);
@@ -1183,8 +1042,8 @@ function formatDate(dateString) {
   });
 }
 
-// Sort album items
-function sortAlbumItems(items, sortType) {
+// Sort items
+function sortItems(items, sortType) {
   const sorted = [...items];
   
   switch(sortType) {
@@ -1197,7 +1056,11 @@ function sortAlbumItems(items, sortType) {
     case 'title-desc':
       return sorted.sort((a, b) => b.title.localeCompare(a.title));
     case 'favorite':
-      return sorted.sort((a, b) => (b.fav === a.fav) ? 0 : b.fav ? -1 : 1);
+      return sorted.sort((a, b) => {
+        const aFav = favorites[a.id] || false;
+        const bFav = favorites[b.id] || false;
+        return (bFav === aFav) ? 0 : bFav ? -1 : 1;
+      });
     default:
       return sorted;
   }
@@ -1205,20 +1068,41 @@ function sortAlbumItems(items, sortType) {
 
 // Get folder image count
 function getFolderImageCount(category) {
-  return album.filter(item => item.category === category).length;
+  return albumData.filter(item => item.category === category).length;
+}
+
+// Toggle favorite
+function toggleFavorite(id) {
+  favorites[id] = !favorites[id];
+  localStorage.setItem('photoAlbumFavorites', JSON.stringify(favorites));
+  
+  const item = albumData.find(x => x.id === id);
+  if (!item) return;
+  
+  if (favoritesView.classList.contains('hidden') === false) {
+    renderFavorites();
+    showToast(favorites[id] ? 'Added to favorites ♥' : 'Removed from favorites', 'success');
+  } else if (currentCategory !== null && !searchActive) {
+    renderAlbum(currentCategory);
+    showToast(favorites[id] ? 'Added to favorites ♥' : 'Removed from favorites', 'success');
+  }
+  
+  if (currentItemId === id && modalOverlay.classList.contains('active')) {
+    modalFavoriteDisplay.textContent = favorites[id] ? 'Yes ♥' : 'No';
+    toggleFavoriteModal.innerHTML = `<i class="${favorites[id] ? 'fas' : 'far'} fa-heart"></i><span>${favorites[id] ? 'Unfavorite' : 'Favorite'}</span>`;
+  }
 }
 
 // Render folders
 function renderFolders() {
   folderGrid.innerHTML = '';
-  const categories = ['Album', 'HER', 'Together', 'Food', 'Journey', ''];
+  const categories = ['Album', 'HER', 'Together', 'Food', 'Journey'];
   const categoryNames = {
     'Album': 'Album',
     'HER': 'HER',
     'Together': 'Together', 
     'Food': 'Your Food',
-    'Journey': 'Journey',
-    '': 'No Category'
+    'Journey': 'Journey'
   };
   
   const icons = {
@@ -1226,8 +1110,7 @@ function renderFolders() {
     'HER': 'fas fa-heart',
     'Together': 'fas fa-users',
     'Food': 'fas fa-utensils',
-    'Journey': 'fas fa-route',
-    '': 'fas fa-folder'
+    'Journey': 'fas fa-route'
   };
   
   categories.forEach(cat => {
@@ -1245,7 +1128,6 @@ function renderFolders() {
     folderGrid.appendChild(div);
   });
   
-  // Show folder view
   folderView.classList.remove('hidden');
   albumView.classList.add('hidden');
   favoritesView.classList.add('hidden');
@@ -1263,7 +1145,6 @@ function openCategory(category) {
   breadcrumb.classList.remove('hidden');
   sortControls.classList.remove('hidden');
   
-  // Update breadcrumb
   const categoryName = category === '' ? 'No Category' : category;
   breadcrumbCurrent.innerHTML = `<i class="fas fa-folder-open"></i> <span>${categoryName}</span>`;
   albumTitle.textContent = categoryName;
@@ -1274,25 +1155,21 @@ function openCategory(category) {
 // Render album
 function renderAlbum(category) {
   albumGrid.innerHTML = '';
-  let filtered = album.filter(item => item.category === category);
-  
-  // Apply sorting
-  filtered = sortAlbumItems(filtered, currentSort);
-  
+  let filtered = albumData.filter(item => item.category === category);
+  filtered = sortItems(filtered, currentSort);
   const count = filtered.length;
   
   emptyNotice.classList.toggle('hidden', count > 0);
   
-  if (count === 0) {
-    return;
-  }
+  if (count === 0) return;
   
   filtered.forEach(item => {
+    const isFav = favorites[item.id] || false;
     const div = document.createElement('div');
-    div.className = `album-card ${item.fav ? 'favorited' : ''}`;
+    div.className = `album-card ${isFav ? 'favorited' : ''}`;
     div.innerHTML = `
-      <button class="fav-btn ${item.fav ? 'active' : ''}" data-id="${item.id}">
-        <i class="${item.fav ? 'fas' : 'far'} fa-heart"></i>
+      <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${item.id}">
+        <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
       </button>
       <img src="${item.src}" alt="${item.title}" class="album-image" loading="lazy">
       <div class="album-info">
@@ -1300,7 +1177,7 @@ function renderAlbum(category) {
         <div class="album-desc">${item.desc}</div>
         <div class="album-meta">
           <span>${formatDate(item.date)}</span>
-          <span>${item.fav ? '♥' : ''}</span>
+          <span>${isFav ? '♥' : ''}</span>
         </div>
       </div>
     `;
@@ -1319,20 +1196,16 @@ function renderAlbum(category) {
 // Render favorites
 function renderFavorites() {
   favoritesGrid.innerHTML = '';
-  let favorites = album.filter(item => item.fav);
-  
-  // Apply sorting
-  favorites = sortAlbumItems(favorites, currentSort);
-  
-  const count = favorites.length;
+  let favItems = albumData.filter(item => favorites[item.id]);
+  favItems = sortItems(favItems, currentSort);
+  const count = favItems.length;
   
   emptyFavorites.classList.toggle('hidden', count > 0);
   
-  if (count === 0) {
-    return;
-  }
+  if (count === 0) return;
   
-  favorites.forEach(item => {
+  favItems.forEach(item => {
+    const isFav = favorites[item.id] || false;
     const div = document.createElement('div');
     div.className = 'album-card favorited';
     div.innerHTML = `
@@ -1361,54 +1234,29 @@ function renderFavorites() {
   });
 }
 
-// Toggle favorite
-function toggleFavorite(id) {
-  const item = album.find(x => x.id === id);
-  if (!item) return;
-  
-  item.fav = !item.fav;
-  saveAlbumToStorage(album);
-  
-  // Update current view
-  if (favoritesView.classList.contains('hidden') === false) {
-    renderFavorites();
-    showToast(item.fav ? 'Added to favorites ♥' : 'Removed from favorites', 'success');
-  } else if (currentCategory !== null && !searchActive) {
-    renderAlbum(currentCategory);
-    showToast(item.fav ? 'Added to favorites ♥' : 'Removed from favorites', 'success');
-  }
-  
-  // Update modal if open
-  if (currentItemId === id && modalOverlay.classList.contains('active')) {
-    modalFavoriteDisplay.textContent = item.fav ? 'Yes ♥' : 'No';
-    toggleFavoriteModal.innerHTML = `<i class="${item.fav ? 'fas' : 'far'} fa-heart"></i><span>${item.fav ? 'Unfavorite' : 'Favorite'}</span>`;
-  }
-}
-
 // Open modal
 function openModal(id) {
-  const item = album.find(x => x.id === id);
+  const item = albumData.find(x => x.id === id);
   if (!item) return;
   
   currentItemId = id;
+  const isFav = favorites[id] || false;
+  
   modalImage.src = item.src;
   modalTitleDisplay.textContent = item.title;
   modalDescDisplay.textContent = item.desc;
   modalDateDisplay.textContent = formatDate(item.date);
   modalCategoryDisplay.textContent = item.category || 'No Category';
-  modalFavoriteDisplay.textContent = item.fav ? 'Yes ♥' : 'No';
+  modalFavoriteDisplay.textContent = isFav ? 'Yes ♥' : 'No';
   
-  // Update favorite button in modal
-  toggleFavoriteModal.innerHTML = `<i class="${item.fav ? 'fas' : 'far'} fa-heart"></i><span>${item.fav ? 'Unfavorite' : 'Favorite'}</span>`;
+  toggleFavoriteModal.innerHTML = `<i class="${isFav ? 'fas' : 'far'} fa-heart"></i><span>${isFav ? 'Unfavorite' : 'Favorite'}</span>`;
   
-  editForm.classList.add('hidden');
   modalOverlay.classList.add('active');
 }
 
 // Close modal
 function closeModal() {
   modalOverlay.classList.remove('active');
-  editForm.classList.add('hidden');
 }
 
 // Show favorites view
@@ -1429,7 +1277,6 @@ modalOverlay.addEventListener('click', (e) => {
 });
 
 backButton.addEventListener('click', () => {
-  // Go back to home or previous page
   if (window.history.length > 1) {
     window.history.back();
   } else {
@@ -1448,50 +1295,10 @@ backFromFavorites.addEventListener('click', () => {
 
 viewFavoritesBtn.addEventListener('click', showFavorites);
 
-editBtn.addEventListener('click', () => {
-  const item = album.find(x => x.id === currentItemId);
-  if (!item) return;
-  
-  modalTitle.value = item.title;
-  modalDesc.value = item.desc;
-  modalDate.value = item.date;
-  modalCategory.value = item.category || 'Album';
-  editForm.classList.remove('hidden');
-});
-
-cancelEdit.addEventListener('click', () => {
-  editForm.classList.add('hidden');
-});
-
-saveChanges.addEventListener('click', () => {
-  const item = album.find(x => x.id === currentItemId);
-  if (!item) return;
-  
-  item.title = modalTitle.value;
-  item.desc = modalDesc.value;
-  item.date = modalDate.value;
-  item.category = modalCategory.value;
-  
-  // Save to localStorage
-  saveAlbumToStorage(album);
-  
-  // Update current view
-  if (favoritesView.classList.contains('hidden') === false) {
-    renderFavorites();
-  } else if (currentCategory !== null && !searchActive) {
-    renderAlbum(currentCategory);
-  }
-  
-  openModal(currentItemId);
-  showToast('Changes saved successfully!', 'success');
-});
-
 toggleFavoriteModal.addEventListener('click', () => {
   toggleFavorite(currentItemId);
-  const item = album.find(x => x.id === currentItemId);
-  if (item) {
-    modalFavoriteDisplay.textContent = item.fav ? 'Yes ♥' : 'No';
-  }
+  const isFav = favorites[currentItemId] || false;
+  modalFavoriteDisplay.textContent = isFav ? 'Yes ♥' : 'No';
 });
 
 breadcrumbRoot.addEventListener('click', () => {
@@ -1514,7 +1321,6 @@ searchInput.addEventListener('input', (e) => {
   const query = e.target.value.toLowerCase().trim();
   
   if (!query) {
-    // If no query, show current view
     if (favoritesView.classList.contains('hidden') === false) {
       showFavorites();
     } else if (currentCategory !== null) {
@@ -1525,15 +1331,13 @@ searchInput.addEventListener('input', (e) => {
     return;
   }
   
-  // Simple search logic
-  const results = album.filter(item => 
+  const results = albumData.filter(item => 
     item.title.toLowerCase().includes(query) ||
     item.desc.toLowerCase().includes(query) ||
     (item.category || '').toLowerCase().includes(query)
   );
   
   if (results.length > 0) {
-    // Show results in album view
     currentCategory = null;
     folderView.classList.add('hidden');
     albumView.classList.remove('hidden');
@@ -1541,14 +1345,14 @@ searchInput.addEventListener('input', (e) => {
     breadcrumb.classList.add('hidden');
     sortControls.classList.remove('hidden');
     
-    // Render search results
     albumGrid.innerHTML = '';
     results.forEach(item => {
+      const isFav = favorites[item.id] || false;
       const div = document.createElement('div');
-      div.className = `album-card ${item.fav ? 'favorited' : ''}`;
+      div.className = `album-card ${isFav ? 'favorited' : ''}`;
       div.innerHTML = `
-        <button class="fav-btn ${item.fav ? 'active' : ''}" data-id="${item.id}">
-          <i class="${item.fav ? 'fas' : 'far'} fa-heart"></i>
+        <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${item.id}">
+          <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
         </button>
         <img src="${item.src}" alt="${item.title}" class="album-image" loading="lazy">
         <div class="album-info">
@@ -1574,7 +1378,6 @@ searchInput.addEventListener('input', (e) => {
     albumTitle.textContent = `Search: ${query}`;
     emptyNotice.classList.add('hidden');
   } else {
-    // Show empty state
     albumGrid.innerHTML = '';
     albumTitle.textContent = `Search: ${query}`;
     emptyNotice.classList.remove('hidden');
@@ -1597,21 +1400,11 @@ document.addEventListener('keydown', (e) => {
 
 // Initialize
 function init() {
-  // Create Valentine background
   createValentineBackground();
-  
-  // Load album data
-  album = initializeSampleData();
-  
-  // Render initial view
   renderFolders();
 }
 
-// Start the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
-
-
-

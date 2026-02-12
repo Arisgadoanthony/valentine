@@ -3,328 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetica | Shared Secrets</title>
+    <title>Valentine Diary - Multimedia Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap');
-
         :root {
-            --rose-bg: #fff0f3;
-            --anthony-bg: #f0f7ff;
-            --rose-accent: #ff85a1;
-            --anthony-accent: #4facfe;
-            --t-important: linear-gradient(135deg, #ff416c, #ff4b2b);
-            --t-happy: linear-gradient(135deg, #f6d365, #fda085);
-            --t-dreamy: linear-gradient(135deg, #a18cd1, #fbc2eb);
-            --t-nature: linear-gradient(135deg, #00b09b, #96c93d);
-            --t-ocean: linear-gradient(135deg, #2193b0, #6dd5ed);
-            --t-sunset: linear-gradient(135deg, #ee0979, #ff6a00);
-            --t-midnight: linear-gradient(135deg, #232526, #414345);
-            --t-galaxy: linear-gradient(135deg, #6a11cb, #2575fc);
+            --valentine-pink: #ffafbd;
+            --valentine-red: #ff385c;
         }
 
         body {
-            margin: 0; font-family: 'Poppins', sans-serif;
-            background: var(--rose-bg); transition: 0.8s ease;
-            overflow-x: hidden; min-height: 100vh;
-            padding: 10px;
+            background: linear-gradient(135deg, #fff5f7 0%, #ffeef1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* --- Enhanced Floating VFX --- */
-        .vfx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-        .particle { 
-            position: absolute; 
-            animation: floatUp 12s infinite linear; 
-            opacity: 0;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+        /* Floating Background */
+        #particle-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
         }
+
+        .floating-item {
+            position: absolute;
+            bottom: -50px;
+            animation: floatUp linear infinite;
+        }
+
         @keyframes floatUp {
-            0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.7; }
-            90% { opacity: 0.7; }
-            100% { transform: translateY(-20vh) translateX(50px) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- Selection Screen --- */
-        #selector {
-            position: fixed; inset: 0; background: white; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px;
+        /* Slider Styles */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            cursor: zoom-in;
         }
 
-        .btn-back {
-            position: absolute; top: 40px; left: 40px;
-            padding: 12px 25px; border-radius: 50px; border: 2px solid #333;
-            text-decoration: none; color: #333; font-weight: 600;
-            transition: 0.3s; background: transparent;
-        }
-        .btn-back:hover { background: #333; color: white; transform: translateX(-5px); }
-
-        .user-cards { display: flex; gap: 40px; margin-top: 40px; }
-        .card {
-            width: 260px; max-width: 150px; height: 380px; border-radius: 40px; border: none;
-            cursor: pointer; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            padding: 40px; color: white; font-size: 2rem; font-family: 'Dancing Script', cursive;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .card:hover { transform: translateY(-20px); box-shadow: 0 30px 60px rgba(0,0,0,0.2); }
-        .card-rose { background: linear-gradient(135deg, #ff85a1, #ffafbd); }
-        .card-anthony { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-
-        /* --- Main UI --- */
-        #diary-ui { display: none; padding: 40px 20px; flex-direction: column; align-items: center; }
-
-        .calendar-container {
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px);
-            border-radius: 50px; padding: 40px; width: 95%; max-width: 550px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.05); border: 1px solid white;
+        .slider-track {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
         }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 15px; }
-
-        .date-tile {
-            aspect-ratio: 1; border-radius: 20px; background: white;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; font-weight: 600;
-            box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #ffffff;
-            position: relative; border: 1px solid rgba(255,255,255,0.5);
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .date-tile:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 10px 10px 20px #d1d9e6, -10px -10px 20px #ffffff;
+        /* Modal Design */
+        #imageModal {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85);
+            transition: opacity 0.3s ease;
         }
 
-        .today-mark { outline: 3px solid #333; outline-offset: 2px; }
-
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.4); border: 1px solid white;
-            padding: 12px 25px; border-radius: 50px; cursor: pointer;
-            font-weight: 600; transition: 0.3s; backdrop-filter: blur(5px);
+        .modal-content {
+            animation: zoomIn 0.3s ease-out;
         }
 
-        .btn-primary {
-            background: #333; color: white; padding: 15px 40px; border-radius: 50px;
-            border: none; font-weight: 600; cursor: pointer; transition: 0.3s;
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        /* --- Enhanced Discard Button --- */
-        .btn-discard {
-            width: 100%; border: 1px solid #ddd; background: #fff; 
-            margin-top: 15px; color: #888; cursor: pointer;
-            padding: 10px; border-radius: 50px; font-weight: 600;
-            transition: all 0.3s ease;
+        /* Calendar */
+        .calendar-day.active {
+            background: var(--valentine-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 56, 92, 0.4);
+            transform: scale(1.1);
         }
-        .btn-discard:hover {
-            background: #fff0f0; color: #ff5e5e; border-color: #ff5e5e;
-            transform: scale(0.98);
-        }
-
-        /* --- Modal & Wrapped Comments --- */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(15px); z-index: 10000; justify-content: center; align-items: center;
-        }
-        .modal-body {
-            width: 90%; max-width: 480px; background: white; border-radius: 40px;
-            padding: 40px; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.2);
-        }
-
-        textarea {
-            width: 100%; height: 150px; border-radius: 25px; border: none;
-            padding: 20px; margin: 20px 0; background: rgba(0,0,0,0.04);
-            font-family: inherit; font-size: 1rem; box-sizing: border-box; resize: none;
-        }
-
-        .comment-box {
-            background: #f8f9fa; border-radius: 20px; padding: 15px; margin-bottom: 20px;
-            max-width: 100%;
-        }
-
-        #display-comment {
-            font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;
-            word-wrap: break-word; /* Prevents text from going off-screen */
-            white-space: pre-wrap; /* Maintains spacing but wraps at end */
-            line-height: 1.4;
-            color: #101010;
-        }
-
-        .indicator-dot {
-            position: absolute; top: 8px; right: 8px; width: 10px; height: 10px;
-            background: #2ecc71; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px #2ecc71;
-        }
-
-        /* Vibe Themes */
-        .t-important { background: var(--t-important) !important; color: white; }
-        .t-happy { background: var(--t-happy) !important; }
-        .t-dreamy { background: var(--t-dreamy) !important; color: white; }
-        .t-nature { background: var(--t-nature) !important; color: white; }
-        .t-midnight { background: var(--t-midnight) !important; color: white; }
-        .t-galaxy { background: var(--t-galaxy) !important; color: white; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-    <div class="vfx" id="vfx"></div>
+<div id="particle-container"></div>
 
-    <div id="selector">
-        <a href="mainpage.html" class="btn-back">❮ BACK TO HOME</a>
-        <h1 style="font-size: 2rem; color: #333; letter-spacing: -1px;">Open Individual Diaries</h1>
-        <div class="user-cards">
-            <button class="card card-rose" onclick="openDiary('Rose')">Rose 🌷</button>
-            <button class="card card-anthony" onclick="openDiary('Anthony')">Anthony 🌿</button>
+<div id="imageModal" class="fixed inset-0 z-[100] hidden flex flex-col items-center justify-center p-4">
+    <button onclick="closeModal()" class="absolute top-6 right-6 text-white text-4xl hover:text-pink-400 transition">&times;</button>
+    <div class="modal-content max-w-5xl w-full flex items-center justify-center">
+        <img id="modalImg" src="" class="max-w-full max-h-[85vh] rounded-xl shadow-2xl border-4 border-white/10 object-contain">
+    </div>
+    <p id="modalCaption" class="text-white mt-4 font-medium tracking-wide bg-black/50 px-4 py-2 rounded-full"></p>
+</div>
+
+<div class="max-w-6xl mx-auto relative">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <a href="mainpage.html" class="inline-flex items-center gap-2 bg-white/80 backdrop-blur px-5 py-2 rounded-full text-pink-600 font-bold shadow-sm hover:bg-pink-500 hover:text-white transition-all group">
+            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+            Back
+        </a>
+
+        <div class="flex items-center gap-3 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-pink-100">
+            <span class="text-pink-500 font-bold"><i class="fas fa-filter mr-1"></i> Year:</span>
+            <select id="yearFilter" onchange="changeYear()" class="bg-transparent outline-none text-gray-700 font-bold cursor-pointer">
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+            </select>
         </div>
     </div>
 
-    <div id="diary-ui">
-        <div style="width:100%; max-width:550px; display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-            <h2 id="diary-owner" style="font-family:'Dancing Script'; font-size: 2.5rem; margin:0;"></h2>
-            <button class="btn-glass" onclick="switchUser()">SWITCH USER</button>
-        </div>
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-pink-600 mb-2">
+            <i class="fas fa-heart animate-bounce mr-2"></i>
+            My Daily Story 🌸
+        </h1>
+    </header>
 
-        <div class="calendar-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-                <button class="btn-glass" onclick="moveMonth(-1)">❮</button>
-                <h3 id="month-label" style="margin:0; letter-spacing:1px;"></h3>
-                <button class="btn-glass" onclick="moveMonth(1)">❯</button>
-            </div>
-            <div class="calendar-grid" id="grid"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal-body" id="modal-body">
-            <h2 id="entry-date" style="margin:0 0 10px 0;"></h2>
-            
-            <div style="display:flex; gap:10px;">
-                <select id="vibe-select" class="btn-glass" style="flex:1;" onchange="updateModalTheme(this.value)">
-                    <option value="none">Standard Vibe</option>
-                    <option value="t-important">🔥 Important</option>
-                    <option value="t-happy">✨ Happy</option>
-                    <option value="t-dreamy">🌙 Dreamy</option>
-                    <option value="t-nature">🌿 Nature</option>
-                    <option value="t-midnight">🌑 Midnight</option>
-                    <option value="t-galaxy">🌌 Galaxy</option>
-                </select>
-                <select id="emoji-select" class="btn-glass" style="flex:1;">
-                    <option value="">Mood</option>
-                    <option value="🌸">🌸</option><option value="🔥">🔥</option><option value="💎">💎</option>
-                    <option value="⭐">⭐</option><option value="🩹">🩹</option>
-                </select>
-            </div>
-
-            <textarea id="entry-text" placeholder="Write the heart out..."></textarea>
-
-            <div class="comment-box">
-                <p style="font-size:0.7rem; color:#ff5555; margin:0 0 5px 0; text-transform:uppercase;">Comment as <span id="comment-as"></span></p>
-                <div id="display-comment"></div>
-                <div style="display:flex; gap:10px; align-items: center;">
-                    <input type="text" id="input-comment" placeholder="Leave a note..." style="flex:1; border:none; border-bottom:1px solid #ddd; background:transparent; padding:5px;">
-                    <button onclick="postComment()" style="background:none; border:none; color:var(--rose-accent); cursor:pointer; font-weight:bold;">POST</button>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-4 bg-white/90 backdrop-blur p-6 rounded-3xl shadow-xl border border-pink-100 h-fit">
+            <div class="flex justify-between items-center mb-6 px-2">
+                <h2 id="calendarTitle" class="text-2xl font-bold text-gray-800 italic">Feb</h2>
+                <div class="flex gap-2">
+                    <span class="text-xl">📅</span><span class="text-xl">✨</span>
                 </div>
             </div>
+            
+            <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-pink-400 mb-4 uppercase tracking-widest">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            
+            <div id="calendarGrid" class="grid grid-cols-7 gap-2"></div>
+        </div>
 
-            <button class="btn-primary" style="width:100%" onclick="saveEntry()">SAVE MEMORY</button>
-            <button class="btn-discard" onclick="closeModal()">DISCARD CHANGES</button>
+        <div class="lg:col-span-8">
+            <div id="diaryDisplay" class="diary-card bg-white rounded-3xl shadow-2xl overflow-hidden border border-pink-100 min-h-[650px]">
+                <div class="h-full flex flex-col items-center justify-center p-20 text-center">
+                    <div class="text-8xl mb-6">💌</div>
+                    <h3 class="text-2xl font-bold text-pink-600">Choose a date on the calendar</h3>
+                    <p class="text-gray-400 mt-2 italic">I've hidden a secret memory for every day we spend together...</p>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
-        let currentUser = "";
-        let db = JSON.parse(localStorage.getItem('shadow_diary_v7')) || { Rose: {}, Anthony: {} };
-        let currentDate = new Date();
+<script>
+    // Expanded Diary Data to support Year Filter
+    const diaryEntries = {
+        "2026-02-12": { 
+            title: "Sign of Her Love 💖", 
+            text: "She gave me a hair-tie that symbolize her existence in my life. Although I did't know how to express my feelings outside but inside I am filled with emotions I've never felt before. She might not know this but I will treasure this always as this makes me remind of hair hair and the smell of it.", 
+            images: ["images/diary/hairtie12_1.jpg", "images/diary/hairtie12_2.jpg"]
+        },
+        "2026-02-13": { 
+            title: "First day wearing Hairtie 💖", 
+            text: "I am happy wearing it and some of my friends notice it, I lowkey smiled and deep inside of me is a warmth and joy that makes my heart melts as I think of her. I am so happy",  
+            images: ["images/diary/hairtie13_1.jpg", "images/diary/hairtie13_2.jpg", "images/diary/hairtie13_3.jpg"]
+        }
+    };
+    
 
-        function openDiary(user) {
-            currentUser = user;
-            document.getElementById('selector').style.display = 'none';
-            document.getElementById('diary-ui').style.display = 'flex';
-            document.getElementById('diary-owner').innerText = `${user}'s Space`;
-            document.getElementById('comment-as').innerText = (user === 'Rose') ? "Anthony😎" : "Rose cutiee ❤️";
-            document.body.style.background = (user === 'Rose') ? 'var(--rose-bg)' : 'var(--anthony-bg)';
-            renderCalendar();
+    let currentYear = 2026;
+    let slideInterval;
+
+    function initCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+        document.getElementById('calendarTitle').innerText = `Feb ${currentYear}`;
+
+        // Feb 2026 starts Sun(0), Feb 2025 starts Sat(6), Feb 2024 starts Thu(4)
+        const startDayMap = { "2026": 0, "2025": 6, "2024": 4 };
+        const startDay = startDayMap[currentYear];
+        const daysInFeb = currentYear % 4 === 0 ? 29 : 28;
+
+        // Add empty cells for alignment
+        for (let i = 0; i < startDay; i++) {
+            grid.appendChild(document.createElement('div'));
         }
 
-        function switchUser() { openDiary(currentUser === 'Rose' ? 'Anthony' : 'Rose'); }
-
-        function renderCalendar() {
-            const grid = document.getElementById('grid'); grid.innerHTML = '';
-            const m = currentDate.getMonth(), y = currentDate.getFullYear();
-            document.getElementById('month-label').innerText = `${new Intl.DateTimeFormat('en-US', {month:'long'}).format(currentDate)} ${y}`;
-            const start = new Date(y, m, 1).getDay();
-            const days = new Date(y, m+1, 0).getDate();
-            ['S','M','T','W','T','F','S'].forEach(d => grid.innerHTML += `<div style="text-align:center; opacity:0.3; font-size:0.8rem; font-weight:bold;">${d}</div>`);
-            for(let i=0; i<start; i++) grid.appendChild(document.createElement('div'));
-            for(let i=1; i<=days; i++) {
-                const key = `${y}-${m+1}-${i}`;
-                const tile = document.createElement('div');
-                tile.className = 'date-tile';
-                const entry = db[currentUser][key];
-                if(entry) {
-                    if(entry.vibe !== 'none') tile.classList.add(entry.vibe);
-                    if(entry.comment) tile.innerHTML += `<div class="indicator-dot"></div>`;
-                    if(entry.emoji) tile.innerHTML += `<span style="position:absolute; bottom:5px; font-size:0.7rem;">${entry.emoji}</span>`;
-                }
-                if(i === new Date().getDate() && m === new Date().getMonth()) tile.classList.add('today-mark');
-                tile.innerHTML += `<span>${i}</span>`;
-                tile.onclick = () => openModal(key);
-                grid.appendChild(tile);
+        for (let day = 1; day <= daysInFeb; day++) {
+            const dateStr = `${currentYear}-02-${day.toString().padStart(2, '0')}`;
+            const dayEl = document.createElement('div');
+            dayEl.className = 'w-full aspect-square flex flex-col items-center justify-center rounded-full cursor-pointer transition-all hover:bg-pink-100 font-semibold text-gray-700 relative';
+            dayEl.innerText = day;
+            
+            if (diaryEntries[dateStr]) {
+                const heart = document.createElement('span');
+                heart.className = 'text-[9px] absolute bottom-1';
+                heart.innerText = '💖';
+                dayEl.appendChild(heart);
             }
-        }
 
-        function openModal(key) {
-            const entry = db[currentUser][key] || {text:"", vibe:"none", emoji:"", comment:""};
-            document.getElementById('entry-date').innerText = key;
-            document.getElementById('entry-text').value = entry.text;
-            document.getElementById('vibe-select').value = entry.vibe;
-            document.getElementById('emoji-select').value = entry.emoji;
-            document.getElementById('display-comment').innerText = entry.comment || "No notes yet...";
-            updateModalTheme(entry.vibe);
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
-
-        function updateModalTheme(v) {
-            const body = document.getElementById('modal-body');
-            body.className = 'modal-body ' + v;
-            body.style.background = (v === 'none') ? 'white' : 'transparent';
-        }
-
-        function postComment() {
-            const commenter = (currentUser === 'Rose') ? "Anthony😎" : "Rose cutiee ❤️";
-            const msg = document.getElementById('input-comment').value;
-            if(msg) {
-                document.getElementById('display-comment').innerText = `${commenter}: ${msg}`;
-                document.getElementById('input-comment').value = "";
-            }
-        }
-
-        function saveEntry() {
-            const key = document.getElementById('entry-date').innerText;
-            db[currentUser][key] = {
-                text: document.getElementById('entry-text').value,
-                vibe: document.getElementById('vibe-select').value,
-                emoji: document.getElementById('emoji-select').value,
-                comment: document.getElementById('display-comment').innerText.includes(':') ? document.getElementById('display-comment').innerText : ""
+            dayEl.onclick = () => {
+                document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('active'));
+                dayEl.classList.add('active');
+                showDiary(dateStr);
             };
-            localStorage.setItem('shadow_diary_v7', JSON.stringify(db));
-            closeModal(); renderCalendar();
+            dayEl.classList.add('calendar-day');
+            grid.appendChild(dayEl);
         }
+    }
 
-        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-        function moveMonth(n) { currentDate.setMonth(currentDate.getMonth() + n); renderCalendar(); }
+    function showDiary(date) {
+        clearInterval(slideInterval);
+        const entry = diaryEntries[date] || { 
+            title: "A Sweet Memory 🧸", 
+            text: "No notes for this date yet, but I'm sure it was a beautiful day with you! ✨🌻", 
+            images: ["https://placehold.co/800x500/fff5f7/e91e63?text=A+Beautiful+Moment+❤️"] 
+        };
 
-        // --- ENHANCED FLOATING VFX (Hearts & Flowers) ---
-        const vfx = document.getElementById('vfx');
-        const items = ['🌸', '🌷', '💖', '🤍', '🌹', '✨', '🌺', '💕'];
+        const sliderHTML = `
+            <div class="slider-container group">
+                <div class="slider-track" id="sliderTrack">
+                    ${entry.images.map(img => `
+                        <img src="${img}" class="slide" onclick="openModal('${img}')" 
+                             onerror="this.src='https://placehold.co/800x500?text=Sweet+Memory'">
+                    `).join('')}
+                </div>
+                <div class="absolute inset-0 pointer-events-none p-4 opacity-50 text-2xl">🦋 ✨ 🌸</div>
+                <button onclick="moveSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/40 backdrop-blur-md p-3 rounded-full hover:bg-white transition opacity-0 group-hover:opacity-100 shadow-lg"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="moveSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/40 backdrop-blur-md p-3 rounded-full hover:bg-white transition opacity-0 group-hover:opacity-100 shadow-lg"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-3xl font-bold text-gray-800">${entry.title}</h3>
+                    <div class="text-3xl animate-pulse">💝</div>
+                </div>
+                <div class="w-16 h-1 bg-gradient-to-r from-pink-500 to-transparent mb-6"></div>
+                <p class="text-gray-600 text-lg leading-relaxed mb-6">${entry.text}</p>
+                <div class="flex gap-4 text-2xl grayscale hover:grayscale-0 transition-all">
+                    <span>😘</span><span>🌻</span><span>🍭</span><span>🐱‍👤</span><span>🍓</span>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('diaryDisplay').innerHTML = sliderHTML;
+        currentSlide = 0; // Reset slider position
+        startAutoSlide(entry.images.length);
+    }
+
+    // Modal Functions
+    function openModal(src) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const caption = document.getElementById('modalCaption');
+        
+        modalImg.src = src;
+        caption.innerText = "Click outside or 'X' to close";
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Disable scroll
+    }
+
+    function closeModal() {
+        document.getElementById('imageModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Slider Logic
+    let currentSlide = 0;
+    function moveSlide(direction) {
+        const track = document.getElementById('sliderTrack');
+        if (!track) return;
+        const slides = track.children.length;
+        currentSlide = (currentSlide + direction + slides) % slides;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function startAutoSlide(count) {
+        if(count <= 1) return;
+        slideInterval = setInterval(() => moveSlide(1), 4000);
+    }
+
+    // Filter Logic
+    function changeYear() {
+        currentYear = parseInt(document.getElementById('yearFilter').value);
+        initCalendar();
+        // Reset diary view
+        document.getElementById('diaryDisplay').innerHTML = `
+            <div class="h-full flex flex-col items-center justify-center p-20 text-center">
+                <div class="text-8xl mb-6">💌</div>
+                <h3 class="text-2xl font-bold text-pink-600">Select a date for ${currentYear}</h3>
+            </div>
+        `;
+    }
+
+    // Particle Background
+    function createParticles() {
+        const container = document.getElementById('particle-container');
+        const items = ['🌸', '🌺', '💖', '✨', '🌷', '💘', '🌹', '🦋'];
         setInterval(() => {
             const p = document.createElement('div');
-            p.className = 'particle';
+            p.className = 'floating-item';
             p.innerText = items[Math.floor(Math.random() * items.length)];
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.fontSize = (Math.random() * 25 + 15) + 'px';
+            p.style.fontSize = (Math.random() * 20 + 20) + 'px';
             p.style.animationDuration = (Math.random() * 5 + 7) + 's';
-            vfx.appendChild(p);
+            p.style.opacity = Math.random() * 0.6 + 0.2;
+            container.appendChild(p);
             setTimeout(() => p.remove(), 12000);
-        }, 400); // More frequent floating
-    </script>
+        }, 400);
+    }
+
+    // Close modal on background click
+    document.getElementById('imageModal').onclick = (e) => {
+        if(e.target.id === 'imageModal') closeModal();
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initCalendar();
+        createParticles();
+    });
+</script>
 </body>
 </html>
